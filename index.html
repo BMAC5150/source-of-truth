@@ -1,0 +1,1318 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Source of Truth</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400;1,8..60,500&display=swap" rel="stylesheet">
+<style>
+/* Layout: mobile-first macOS Terminal–flavored site. Base styles target phones; min-width
+   queries layer on the wider layouts. Committed dark theme with red/green gradient texture. */
+:root{
+  --paper:#0D0F0E;
+  --paper-alt:#111413;
+  --paper-card:#161A18;
+  --ink:#DCD7CA;
+  --ink-mute:#A7A294;
+  --ink-dim:#736F66;
+  --hair:rgba(217,212,199,.13);
+  --hair-strong:rgba(217,212,199,.24);
+  --green:#4BE36B;
+  --green-dim:#2F8A47;
+  --red:#C24A4A;
+  --red-led:#8B3A3A;
+  --amber:#D6A05E;
+  --f-display:'Chakra Petch','Oxanium',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  --f-serif:'Source Serif 4','Source Serif Pro',Georgia,serif;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(60px + env(safe-area-inset-top,0px))}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-mono);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip-link{position:absolute;top:-200%;left:8px;z-index:300;background:var(--green);color:var(--paper);font-family:var(--f-mono);font-size:11px;letter-spacing:1px;padding:8px 14px}
+.skip-link:focus{top:8px}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+h2{font-family:var(--f-serif);font-weight:500;font-size:clamp(21px,5.5vw,27px);letter-spacing:-.005em;line-height:1.28;color:var(--ink);margin:0;text-wrap:balance}
+h3,h4{font-family:var(--f-display);font-weight:600;letter-spacing:-.01em;margin:0;text-wrap:balance}
+
+.wrap{width:100%;max-width:1140px;margin-inline:auto;
+  padding-left:max(18px,env(safe-area-inset-left,0px));
+  padding-right:max(18px,env(safe-area-inset-right,0px))}
+
+/* ---------- nav (mobile-first: menu button; inline links on wide screens) ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:120;background:rgba(13,15,14,.92);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hair);padding-top:env(safe-area-inset-top,0px)}
+.nav-in{display:flex;align-items:center;gap:12px;min-height:58px;max-width:1140px;margin-inline:auto;
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:12px;letter-spacing:1.4px;text-transform:uppercase;white-space:nowrap}
+.led{width:7px;height:7px;border-radius:50%;flex:none;background:var(--green);box-shadow:0 0 8px rgba(75,227,107,.8)}
+.nav .spacer{flex:1}
+.nav-links{display:none;align-items:center;gap:2px}
+.nav-links a{font-family:var(--f-mono);font-size:12px;letter-spacing:1.3px;text-transform:uppercase;color:var(--ink-mute);padding:9px 12px;transition:color .18s}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--green)}
+.nav-links a.signup{color:var(--ink);border:1px solid var(--green-dim);background:rgba(75,227,107,.05);margin-left:6px}
+.nav-links a.signup:hover{color:var(--green);border-color:var(--green)}
+.menu-btn{display:inline-flex;align-items:center;font-family:var(--f-mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--ink);background:none;border:1px solid var(--hair-strong);padding:10px 13px;cursor:pointer;min-height:42px}
+.menu-btn[aria-expanded="true"]{color:var(--green);border-color:var(--green)}
+.mobile-menu{display:block;max-height:0;overflow:hidden;background:var(--paper-alt);border-bottom:1px solid var(--hair);
+  transition:max-height .22s ease;position:fixed;left:0;right:0;z-index:119;top:calc(59px + env(safe-area-inset-top,0px))}
+.mobile-menu.open{max-height:320px}
+.mobile-menu ul{list-style:none;margin:0;padding:8px max(18px,env(safe-area-inset-left,0px)) 16px}
+.mobile-menu a{display:block;font-family:var(--f-mono);font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-mute);padding:14px 0;border-bottom:1px solid var(--hair)}
+.mobile-menu a.signup{color:var(--green);border-bottom:none;margin-top:6px}
+@media (min-width:821px){
+  .nav-links{display:flex}
+  .menu-btn,.mobile-menu{display:none}
+}
+
+/* ---------- section rhythm + gradient texture (every section) ---------- */
+main{padding-top:calc(58px + env(safe-area-inset-top,0px))}
+section{position:relative;padding-block:clamp(52px,12vw,116px)}
+.band-alt{border-block:1px solid var(--hair)}
+.hero{background:radial-gradient(86% 60% at 50% 2%,rgba(139,58,58,.40),transparent 60%),var(--paper)}
+.hook{background:radial-gradient(74% 90% at 100% 0%,rgba(75,227,107,.12),transparent 62%),var(--paper-alt)}
+.synopsis{background:radial-gradient(60% 75% at 0% 100%,rgba(139,58,58,.20),transparent 62%),var(--paper)}
+.characters{background:radial-gradient(66% 80% at 100% 100%,rgba(75,227,107,.12),transparent 60%),var(--paper-alt)}
+.read{background:radial-gradient(62% 78% at 0% 0%,rgba(139,58,58,.20),transparent 62%),var(--paper)}
+.request{background:radial-gradient(76% 84% at 100% 0%,rgba(75,227,107,.13),transparent 60%),var(--paper-alt)}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-mute);margin:0 0 16px}
+.eyebrow .led{display:inline-block;width:6px;height:6px;margin-right:9px;vertical-align:middle}
+.readout{font-family:var(--f-mono);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-mute);display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.readout .sep{color:var(--ink-dim)}
+.readout .on{color:var(--green)}
+
+/* ---------- hero ---------- */
+.hero{padding-top:clamp(40px,10vw,76px)}
+.hero-copy{position:relative;max-width:820px}
+.hero h1{font-family:var(--f-display);font-weight:700;font-size:clamp(32px,8.5vw,72px);line-height:1;letter-spacing:-.02em;margin:18px 0 0;white-space:nowrap}
+.hero .tagline{font-family:var(--f-display);font-weight:500;font-size:clamp(17px,3.4vw,22px);line-height:1.4;letter-spacing:.005em;color:var(--ink);margin:20px 0 0;max-width:30ch;min-height:1.4em}
+.hero .byline{font-family:var(--f-mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-mute);margin:18px 0 0;min-height:1.2em}
+.cursor{display:inline-block;width:.12em;height:.62em;background:var(--green);margin-left:4px;vertical-align:-.02em;box-shadow:0 0 5px rgba(75,227,107,.5)}
+@media (prefers-reduced-motion:no-preference){.cursor{animation:blink 1.05s step-end infinite}@keyframes blink{50%{opacity:0}}.led,.eyebrow .led{animation:pulse 2.6s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{font-family:var(--f-mono);font-size:12px;letter-spacing:1.4px;text-transform:uppercase;padding:14px 22px;border:1px solid var(--hair-strong);background:transparent;color:var(--ink);cursor:pointer;min-height:48px;display:inline-flex;align-items:center;gap:9px;transition:color .18s,border-color .18s,background .18s}
+.btn:hover,.btn:focus-visible{color:var(--green);border-color:var(--green);background:rgba(75,227,107,.06)}
+.btn.primary{border-color:var(--green-dim);background:rgba(75,227,107,.05)}
+.btn .br{opacity:.55}
+
+/* ---------- hook: two symmetrical quotes ---------- */
+.hook .wrap{display:grid;grid-template-columns:1fr;gap:34px}
+.hook .q{position:relative}
+.hook blockquote{margin:0;font-family:var(--f-serif);font-style:italic;font-weight:500;font-size:clamp(21px,5vw,30px);line-height:1.3;letter-spacing:-.01em}
+.hook cite{display:block;margin-top:18px;font-style:normal;font-family:var(--f-mono);font-size:11px;letter-spacing:1.5px;color:var(--ink-mute)}
+@media (min-width:720px){
+  .hook .wrap{grid-template-columns:1fr 1fr;gap:clamp(36px,6vw,72px);align-items:center}
+  .hook .q+.q{padding-left:clamp(36px,6vw,72px);border-left:1px solid var(--hair)}
+}
+
+/* ---------- synopsis ---------- */
+.prose{max-width:680px}
+.prose .eyebrow{margin-bottom:14px}
+.prose p{font-family:var(--f-serif);font-size:clamp(17px,4.4vw,20px);line-height:1.72;margin:0 0 1.35em;color:var(--ink)}
+.prose p:last-of-type{margin-bottom:0}
+.prose .lead:first-letter{initial-letter:2.3;font-weight:600;margin-right:.08em}
+.comps{margin-top:36px;padding-top:22px;border-top:1px solid var(--hair);font-family:var(--f-mono);font-size:12px;letter-spacing:.5px;color:var(--ink-mute);line-height:1.9}
+.comps b{color:var(--ink);font-weight:500}
+
+/* ---------- characters ---------- */
+.sec-head{max-width:660px;margin-bottom:30px}
+.sec-head p{font-family:var(--f-serif);font-size:16px;line-height:1.6;color:var(--ink-mute);margin:14px 0 0}
+.d-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.rec{background:var(--paper-card);border:1px solid var(--hair);display:flex;flex-direction:column;transition:border-color .2s}
+.rec:hover{border-color:var(--hair-strong)}
+.rec .photo{position:relative;aspect-ratio:4/3;overflow:hidden;border-bottom:1px solid var(--hair);background:var(--paper)}
+.rec .photo img{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block;filter:saturate(.9) contrast(1.02) brightness(.98)}
+.rec .photo::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 52%,rgba(13,15,14,.5)),repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0 1px,transparent 1px 3px),radial-gradient(120% 80% at 50% 0%,rgba(75,227,107,.05),transparent 62%)}
+.rec .top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--hair);
+  font-family:var(--f-mono);font-size:10px;letter-spacing:1.2px;color:var(--ink-dim);text-transform:uppercase;
+  background:repeating-linear-gradient(0deg,rgba(217,212,199,.03) 0 1px,transparent 1px 5px)}
+.chip{font-family:var(--f-mono);font-size:9.5px;letter-spacing:1px;padding:3px 8px;border:1px solid currentColor;border-radius:2px}
+.chip.active{color:var(--green-dim)}
+.chip.unknown{color:var(--amber)}
+.rec .mid{padding:16px;flex:1;display:flex;flex-direction:column}
+.rec h3{font-size:20px;font-weight:600;letter-spacing:0}
+.rec .role{font-family:var(--f-serif);font-size:14.5px;line-height:1.5;color:var(--ink-mute);margin:9px 0 0}
+.rec dl{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;margin:16px 0 0;margin-top:auto;padding-top:14px;border-top:1px solid var(--hair);font-family:var(--f-mono);font-size:11px;letter-spacing:.5px}
+.rec dt{color:var(--ink-dim);text-transform:uppercase;font-size:10px;letter-spacing:1px}
+.rec dd{margin:0;text-align:right;color:var(--ink-mute)}
+.d-more{margin-top:20px}
+.d-more a{font-family:var(--f-mono);font-size:12px;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--green-dim);padding-bottom:3px;transition:color .18s,border-color .18s}
+.d-more a:hover{color:var(--green);border-color:var(--green)}
+@media (min-width:600px){.d-grid{grid-template-columns:repeat(2,1fr);gap:16px;grid-auto-rows:1fr}}
+
+/* ---------- read (READ FREE box retained) ---------- */
+.read-grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:center}
+.read-copy p{font-family:var(--f-serif);font-size:17.5px;line-height:1.6;color:var(--ink-mute);margin:14px 0 26px;max-width:46ch}
+.read-copy .free{color:var(--green)}
+.manifest{background:var(--paper-card);border:1px solid var(--hair)}
+.manifest .mh{padding:12px 16px;border-bottom:1px solid var(--hair);font-family:var(--f-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim);display:flex;justify-content:space-between}
+.manifest ul{list-style:none;margin:0;padding:0}
+.manifest li{border-bottom:1px solid var(--hair)}
+.manifest li:last-child{border-bottom:none}
+.manifest a{display:grid;grid-template-columns:46px 1fr auto;gap:12px;align-items:center;padding:13px 16px;font-family:var(--f-mono);font-size:12px;color:inherit;text-decoration:none;transition:background .18s,color .18s}
+.manifest a:hover,.manifest a:focus-visible{background:rgba(75,227,107,.05);color:var(--green)}
+.manifest .mn{color:var(--ink-dim);letter-spacing:1px}
+.manifest .mt{color:var(--ink);letter-spacing:.5px;text-transform:uppercase;min-width:0}
+.manifest .mf{color:var(--green-dim);font-size:9.5px;letter-spacing:1px;border:1px solid currentColor;border-radius:2px;padding:2px 7px}
+@media (min-width:760px){.read-grid{grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,56px)}}
+
+/* ---------- sign-up (join the list) ---------- */
+.signup-wrap{max-width:540px}
+.panel{background:var(--paper-card);border:1px solid var(--hair);padding:clamp(22px,6vw,32px)}
+.panel h3{font-size:clamp(19px,5vw,23px);font-weight:600}
+.panel .desc{font-family:var(--f-serif);font-size:15.5px;line-height:1.6;color:var(--ink-mute);margin:12px 0 22px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:15px}
+.field label{font-family:var(--f-mono);font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--ink-mute)}
+.field label .opt{color:var(--ink-dim)}
+.field input{font-family:var(--f-mono);font-size:14px;color:var(--ink);background:var(--paper-alt);border:1px solid var(--hair-strong);padding:13px 14px;min-height:46px;width:100%}
+.field input::placeholder{color:var(--ink-dim)}
+.field input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 2px rgba(75,227,107,.18)}
+.consent{display:flex;gap:11px;align-items:flex-start;margin:4px 0 20px;cursor:pointer}
+.consent input{appearance:none;-webkit-appearance:none;flex:none;width:18px;height:18px;margin-top:1px;border:1px solid var(--hair-strong);background:var(--paper-alt);cursor:pointer;position:relative}
+.consent input:checked{border-color:var(--green)}
+.consent input:checked::after{content:"";position:absolute;inset:3px;background:var(--green)}
+.consent input:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.consent span{font-family:var(--f-serif);font-size:13.5px;line-height:1.5;color:var(--ink-mute)}
+.submit{font-family:var(--f-mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;width:100%;padding:15px;border:1px solid var(--green-dim);background:rgba(75,227,107,.06);color:var(--ink);cursor:pointer;min-height:48px;transition:color .18s,border-color .18s,background .18s}
+.submit:hover{color:var(--green);border-color:var(--green);background:rgba(75,227,107,.12)}
+.confirm{display:flex;gap:11px;align-items:flex-start}
+.confirm .led{width:8px;height:8px;margin-top:5px}
+.confirm h4{font-family:var(--f-mono);font-size:13px;letter-spacing:1.3px;color:var(--green);margin:0 0 7px}
+.confirm p{font-family:var(--f-serif);font-size:14.5px;line-height:1.6;color:var(--ink-mute);margin:0}
+
+/* ---------- footer ---------- */
+.foot{background:var(--paper-alt);border-top:1px solid var(--hair);padding-block:22px;font-family:var(--f-mono);font-size:10px;letter-spacing:1px;color:var(--ink-mute)}
+.foot .wrap{display:flex;flex-direction:column;gap:6px}
+.foot .ln{display:flex;align-items:center;gap:10px}
+.foot .ln .led{width:6px;height:6px}
+.foot .ln .ok{color:var(--green)}
+.foot .dots{flex:1;overflow:hidden;white-space:nowrap;color:var(--ink-dim)}
+.foot .end{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between;margin-top:8px;padding-top:12px;border-top:1px solid var(--hair)}
+.foot .end a{color:var(--ink-mute);border-bottom:1px solid transparent;transition:color .18s,border-color .18s}
+.foot .end a:hover{color:var(--green);border-color:var(--green-dim)}
+
+/* ---------- in-page reader overlay ---------- */
+.reader{position:fixed;inset:0;z-index:400;display:flex;flex-direction:column;background:radial-gradient(70% 34% at 50% 0%,rgba(139,58,58,.26),transparent 60%),var(--paper)}
+.reader[hidden]{display:none}
+.reader .rbar{position:sticky;top:0;display:flex;align-items:center;gap:10px;min-height:56px;padding:0 max(14px,env(safe-area-inset-left,0px));background:rgba(13,15,14,.95);border-bottom:1px solid var(--hair);flex:none}
+.reader .home{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.reader .home .led{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(75,227,107,.8)}
+.reader .home .scope{color:var(--ink-dim);margin-left:6px}
+.reader .spacer{flex:1}
+.reader .rtoc{position:relative;font-family:var(--f-mono)}
+.reader .rtoc>summary{list-style:none;cursor:pointer;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-mute);padding:9px 11px;border:1px solid var(--hair-strong)}
+.reader .rtoc>summary::-webkit-details-marker{display:none}
+.reader .rtoc[open]>summary{color:var(--green);border-color:var(--green)}
+.reader .rtoc ul{position:absolute;right:0;top:calc(100% + 8px);width:min(78vw,260px);margin:0;padding:6px;list-style:none;background:var(--paper-alt);border:1px solid var(--hair-strong);box-shadow:0 20px 50px rgba(0,0,0,.5);z-index:5}
+.reader .rtoc li a{display:flex;gap:10px;padding:11px 12px;font-size:12px;color:var(--ink-mute);border-bottom:1px solid var(--hair);text-decoration:none}
+.reader .rtoc li:last-child a{border-bottom:none}
+.reader .rtoc li a:hover{color:var(--green);background:rgba(75,227,107,.05)}
+.reader .rtoc .tn{color:var(--ink-dim)}
+.reader .rclose{font-family:var(--f-mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink);background:none;border:1px solid var(--hair-strong);padding:9px 12px;cursor:pointer;min-height:40px}
+.reader .rclose:hover,.reader .rclose:focus-visible{color:var(--green);border-color:var(--green)}
+.reader .rscroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+.reader .rmain{max-width:680px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left,0px)) 48px;font-family:var(--f-serif)}
+.reader .r-intro{padding:clamp(36px,8vw,64px) 0 8px;text-align:center;border-bottom:1px solid var(--hair)}
+.reader .r-intro .k{font-family:var(--f-mono);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-mute)}
+.reader .r-intro h3{font-family:var(--f-display);font-weight:700;font-size:clamp(26px,7vw,42px);letter-spacing:-.02em;margin:13px 0 10px}
+.reader .r-intro p{font-size:16px;color:var(--ink-mute);max-width:46ch;margin:0 auto;line-height:1.6}
+.reader .chapter{padding-top:clamp(40px,9vw,72px);scroll-margin-top:72px}
+.reader .chapter + .chapter{border-top:1px solid var(--hair);margin-top:20px}
+.reader .ch-kicker{font-family:var(--f-mono);font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--green-dim);text-align:center;margin:0}
+.reader .ch-title{font-family:var(--f-display);font-weight:700;font-size:clamp(25px,6vw,36px);letter-spacing:-.02em;text-align:center;margin:12px 0 0;text-wrap:balance}
+.reader .chapter-slug{display:flex;flex-direction:column;gap:5px;margin:24px 0 0}
+.reader .slug-row{display:grid;grid-template-columns:52px 1fr;gap:12px;font-family:var(--f-mono);font-size:11px;letter-spacing:1.3px}
+.reader .slug-key{color:var(--ink-dim);text-transform:uppercase}
+.reader .slug-val{color:var(--ink-mute);text-transform:uppercase}
+.reader .slug-rule{height:1px;background:var(--hair);margin-top:16px}
+.reader .chapter-body{font-size:clamp(18px,4.4vw,20px);line-height:1.78;margin-top:28px;color:var(--ink)}
+.reader .chapter-body p{margin:0 0 1.4em}
+.reader .chapter-body .first-graf{margin-top:0}
+.reader .chapter-body .lift{font-weight:600}
+.reader .chapter-body .device-text{font-style:italic;color:var(--ink-mute)}
+.reader .scene-break{text-align:center;font-family:var(--f-mono);font-size:14px;letter-spacing:6px;color:var(--ink-dim);margin:40px 0}
+.reader .endcap{margin-top:clamp(44px,9vw,76px);padding:clamp(26px,6vw,38px);border:1px solid var(--hair-strong);background:var(--paper-alt);text-align:center}
+.reader .endcap .k{font-family:var(--f-mono);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--green-dim)}
+.reader .endcap h4{font-family:var(--f-display);font-weight:600;font-size:clamp(20px,5vw,26px);margin:12px 0 10px}
+.reader .endcap p{font-size:15.5px;color:var(--ink-mute);max-width:42ch;margin:0 auto 22px;line-height:1.6}
+.reader .endcap .btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+</style>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="nav">
+  <div class="nav-in">
+    <a href="#main" class="brand"><span class="led" aria-hidden="true"></span>SOURCE_OF_TRUTH</a>
+    <span class="spacer"></span>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#synopsis">Synopsis</a>
+      <a href="#characters">Characters</a>
+      <a href="#read">Read free</a>
+      <a href="#signup" class="signup">Sign-up</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+  </div>
+</header>
+<nav class="mobile-menu" id="mobileMenu" aria-label="Menu">
+  <ul>
+    <li><a href="#synopsis">Synopsis</a></li>
+    <li><a href="#characters">Characters</a></li>
+    <li><a href="#read">Read free</a></li>
+    <li><a href="#signup" class="signup">Sign-up →</a></li>
+  </ul>
+</nav>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <div class="readout">
+          <span><span class="led" aria-hidden="true"></span>SYS::ARC.READER</span>
+          <span class="sep">/</span><span>ACCESS <span class="on">OPEN</span></span>
+          <span class="sep">/</span><span>v0.1</span>
+        </div>
+        <h1 id="hTitle" data-text="Source of Truth">Source of Truth</h1>
+        <p class="tagline" id="hSub" data-text="A geopolitical techno-thriller about the system that decides who is real and who gets deleted.">A geopolitical techno-thriller about the system that decides who is real and who gets deleted.</p>
+        <p class="byline" id="hBy" data-text="A novel by BMAC">A novel by BMAC</p>
+        <div class="hero-cta">
+          <a class="btn primary" href="#read"><span class="br" aria-hidden="true">[</span>Read free<span class="br" aria-hidden="true">]</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOOK: two symmetrical quotes -->
+  <section class="hook band-alt">
+    <div class="wrap">
+      <div class="q">
+        <blockquote>“It doesn’t say I have no money. It says I don’t exist.”</blockquote>
+        <cite>— from the novel</cite>
+      </div>
+      <div class="q">
+        <blockquote>“We built a scalpel,” he said. “We did not know it was also a bomb.”</blockquote>
+        <cite>— from the novel</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYNOPSIS -->
+  <section class="synopsis" id="synopsis">
+    <div class="wrap prose">
+      <p class="eyebrow"><span class="led" aria-hidden="true"></span>SYNOPSIS</p>
+      <h2>Four factions, one software application with the power to determine whose identity can continue to exist.</h2>
+      <p class="lead" style="margin-top:26px">On a cold February morning in New York, a woman’s bank card is declined at a coffee counter. Then at an ATM. The same happens to sixty-seven thousand more New Yorkers. By nine the systems have quietly corrected themselves and the city forgets. Thirty blocks south, in a fintech start-up above a Chinatown dumpling shop, four engineers learn that the overnight glitch was theirs, and that the tool they built to tell banks who a person is can also tell every connected system that a person was never there at all.</p>
+      <p>Sovren cleans up duplicate customer records and creates one authoritative version of a person, trusted by thirty-one community banks and hundreds of connected businesses across six states. Turned the other way, it can erase people from their own financial lives in a single night leaving no fingerprints behind. In a buried bunker outside Tehran, a cyber cell under pressure to prove it is still worth keeping as war approaches has already accessed the code. In a Manhattan tower, an analyst notices an anomaly in a funding deal she is closing and is manipulated into silent compliance to keep her job. At Fort Meade, intel on a series of random cyber attacks nobody cares about grows into a pile on a Navy commander’s desk.</p>
+      <p><em>Source of Truth</em> is a geopolitical techno-thriller about competent people inside failing institutions, making rational decisions that add up to a catastrophe none of them can see coming. There are no explosions or plagues. There is a system that confirms who is real and a looming apocalypse that a group of disparate people must race to prevent.</p>
+      <p class="comps">FOR READERS OF &nbsp;·&nbsp; Robert Harris, <b>The Fear Index</b> &nbsp;·&nbsp; Daniel Suarez, <b>Daemon</b> &nbsp;·&nbsp; the institutional dread of <b>Mr. Robot</b></p>
+    </div>
+  </section>
+
+  <!-- CHARACTERS -->
+  <section class="characters band-alt" id="characters">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow"><span class="led" aria-hidden="true"></span>CHARACTERS</p>
+        <h2>Four people will decide who stays and who goes.</h2>
+        <p>The story moves between a startup, an IRGC bunker, a venture firm and an intelligence command. Four personalities in a digital world, four back stories, four separate quests to make a difference.</p>
+      </div>
+      <div class="d-grid">
+        <article class="rec">
+          <div class="photo"><img src="characters/walker.jpg" alt="Illustrated portrait of Dakota Walker" loading="lazy" width="760" height="760"></div>
+          <div class="top"><span>REC-01</span><span class="chip active">ACTIVE</span></div>
+          <div class="mid"><h3>Dakota Walker</h3><p class="role">Founder of Sovren, running on a shrinking balance and three people she trusts. Overnight one Tuesday in February her company&#8217;s software erased sixty-seven thousand people. By morning they were back. She told no one.</p><dl><dt>Role</dt><dd>Founder, Sovren</dd><dt>Loc</dt><dd>Mott St, NYC</dd><dt>First seen</dt><dd>Ch. 1</dd></dl></div>
+        </article>
+        <article class="rec">
+          <div class="photo"><img src="characters/operator.jpg" alt="Illustrated portrait of The Operator" loading="lazy" width="760" height="760"></div>
+          <div class="top"><span>REC-02</span><span class="chip unknown">UNKNOWN</span></div>
+          <div class="mid"><h3>The Operator</h3><p class="role">First in his class at Sharif, with nowhere to take it but the IRGC. He raises cash for the regime by draining American bank accounts. He uses his skills to build something more terrible.</p><dl><dt>Role</dt><dd>IRGC cyber unit</dd><dt>Loc</dt><dd>Karaj, Iran</dd><dt>First seen</dt><dd>Ch. 3</dd></dl></div>
+        </article>
+        <article class="rec">
+          <div class="photo"><img src="characters/analyst.jpg" alt="Illustrated portrait of Anahita Rostami" loading="lazy" width="760" height="760"></div>
+          <div class="top"><span>REC-03</span><span class="chip active">ACTIVE</span></div>
+          <div class="mid"><h3>Anahita Rostami</h3><p class="role">Twenty-seven, a senior analyst at a Manhattan venture firm and the daughter of Iranian exiles with no family left to call. Her boss tells her to sign the investor&#8217;s background check or clear out her desk. She receives a phantom text message that changes her life. She is now the most dangerous person in the room because she is the most alone.</p><dl><dt>Role</dt><dd>Analyst, Prescott Calder</dd><dt>Loc</dt><dd>Flatiron, NYC</dd><dt>First seen</dt><dd>Ch. 6</dd></dl></div>
+        </article>
+        <article class="rec">
+          <div class="photo"><img src="characters/briggs.jpg" alt="Illustrated portrait of Commander Briggs" loading="lazy" width="760" height="760"></div>
+          <div class="top"><span>REC-04</span><span class="chip active">ACTIVE</span></div>
+          <div class="mid"><h3>Cdr. Briggs</h3><p class="role">Fifty-eight, seven months from the end of a Navy career, with a rescue dog and a rented house. He no longer trusts the superiors above him, who are ready to be briefed but not ready to listen, so he guards what he finds himself and quietly works around them until the institution is willing to act on it.</p><dl><dt>Role</dt><dd>US Cyber Command</dd><dt>Loc</dt><dd>Fort Meade</dd><dt>First seen</dt><dd>Ch. 5</dd></dl></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- READ -->
+  <section class="read" id="read">
+    <div class="wrap read-copy" style="max-width:640px;margin-inline:auto">
+      <p class="eyebrow"><span class="led" aria-hidden="true"></span>THE OPENING</p>
+      <h2>Read the first five chapters for free</h2>
+      <p>It begins with outages in New York to an Iranian cyber warfare bunker to Cyber Command in Fort Meade.</p>
+      <button class="btn primary" id="openReader" type="button"><span class="br" aria-hidden="true">[</span>Start reading<span class="br" aria-hidden="true">]</span></button>
+    </div>
+  </section>
+
+  <!-- SIGN-UP -->
+  <section class="request band-alt" id="signup">
+    <div class="wrap">
+      <div class="signup-wrap">
+        <div class="sec-head" style="margin-bottom:24px"><p class="eyebrow"><span class="led" aria-hidden="true"></span>SIGN-UP</p><h2>Join the list</h2></div>
+        <div class="panel">
+          <p class="desc">News about <em>Source of Truth</em> and the next book. About one email a month. Unsubscribe anytime.</p>
+          <form id="joinForm" novalidate>
+            <div class="field"><label for="jEmail">Email</label><input type="email" id="jEmail" name="email" required placeholder="you@domain.com" autocomplete="email"></div>
+            <div class="field"><label for="jName">First name <span class="opt">(optional)</span></label><input type="text" id="jName" name="name" placeholder="—" autocomplete="given-name"></div>
+            <label class="consent" for="jConsent"><input type="checkbox" id="jConsent" name="consent"><span>Email me news about <em>Source of Truth</em> and the next book. About one email a month. Unsubscribe anytime.</span></label>
+            <button type="submit" class="submit">Confirm</button>
+          </form>
+          <div class="confirm" id="joinDone" hidden><span class="led" aria-hidden="true"></span><div><h4>IDENTITY CONFIRMED</h4><p>Check your inbox and open the confirmation email to finish joining. Double opt-in keeps the list clean.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- READER OVERLAY -->
+  <div class="reader" id="reader" hidden role="dialog" aria-modal="true" aria-label="Read the opening">
+    <div class="rbar">
+      <span class="home"><span class="led" aria-hidden="true"></span>SOURCE_OF_TRUTH<span class="scope">/ THE OPENING</span></span>
+      <span class="spacer"></span>
+      <details class="rtoc" id="rtoc"><summary>Contents</summary><ul><li><a href="#ch1"><span class="tn">01</span> Chapter One</a></li><li><a href="#ch2"><span class="tn">02</span> Chapter Two</a></li><li><a href="#ch3"><span class="tn">03</span> Chapter Three</a></li><li><a href="#ch4"><span class="tn">04</span> Chapter Four</a></li><li><a href="#ch5"><span class="tn">05</span> Chapter Five</a></li></ul></details>
+      <button class="rclose" id="closeReader" type="button">Close &#10005;</button>
+    </div>
+    <div class="rscroll" id="rscroll">
+      <div class="rmain">
+        <div class="r-intro">
+          <p class="k">The Opening &middot; Free sample</p>
+          <h3>Source of Truth</h3>
+          <p>The first five chapters. New York, Tehran, and Fort Meade, up to the week the system learns a second answer.</p>
+        </div>
+        <section class="chapter" id="ch1"><p class="ch-kicker">CHAPTER 01</p><h2 class="ch-title">Chapter One</h2><div class="chapter-slug"><div class="slug-row"><span class="slug-key">CH.</span><span class="slug-val">01</span></div><div class="slug-row"><span class="slug-key">LOC.</span><span class="slug-val">Hell&rsquo;s Kitchen, NYC</span></div><div class="slug-row"><span class="slug-key">TIME</span><span class="slug-val">07:40 EST</span></div><div class="slug-rule" aria-hidden="true"></div></div><article class="chapter-body"><p class="first-graf"><span class="lift">At seven-forty on an early February morning,</span> Hell&rsquo;s Kitchen looked like a neighborhood that had lost an argument with money and kept going anyway.</p>
+        <p>The young woman came down West Forty-Fourth Street.</p>
+        <p>Head down against the wind, one hand hooked through the strap of a canvas tote heavy with a laptop, charger, notebook, and the miscellaneous survival gear of somebody whose job existed mostly on screens. Her other hand was in the pocket of her bomber jacket around her phone, as if body heat might improve the odds of the day.</p>
+        <p>It was cold in the flat, discouraging way New York was cold after the holidays. The kind that made trash bags stiffen at the curb. The kind that turned yesterday&rsquo;s slush into black ridges at every crosswalk.</p>
+        <p>The sky was the color of old receipt paper. Delivery trucks idled in front of buildings no one could afford to live in without family money, private equity money, or a form of luck no one she knew had ever actually encountered.</p>
+        <p>Hell&rsquo;s Kitchen at that hour was between faces.</p>
+        <p>The old neighborhood still hung on in pieces: rent-controlled seniors with wire shopping carts, men from old union families smoking outside diners that had survived ten mayors, laundromats one rent hike away from becoming wine bars. On top of it sat the newer layer: glass-front pet spas, Pilates studios with no one visible inside, coffee bars charging seven dollars for oat milk because the neighborhood had been aggressively informed that this was normal now.</p>
+        <p>She fit uneasily into both versions and belonged cleanly to neither.</p>
+        <p>She was in her twenties. Dark hair pulled back badly. Oversized black sweatshirt under a faded green bomber jacket. Charcoal pants. White sneakers marked gray at the edges from the city. Beats headphones around her neck.</p>
+        <p>Her face held the exhausted neutrality common to young people who lived by subscriptions, passwords, delivery estimates, and freelance-adjacent employment terms. A look that said neither winning nor drowning.</p>
+        <p>She passed a shuttered bodega with a handwritten HELP WANTED sign in the window and a luxury condo tower rising directly above it, all smoked glass and planted terraces and private fitness amenities. A man was hosing dog piss off the pavement in front of the tower while two doors down a church basement food pantry was already setting up folding tables.</p>
+        <p>She looked at it for a second without breaking stride.</p>
+        <p>She pushed through the glass door of the coffee bar in the middle of the block and stepped into heat, steam, and the burnt-sweet smell of espresso and old pastry.</p>
+        <p>Exposed brick. White tile. Edison bulbs. The menu board listed prices she had long stopped reading carefully.</p>
+        <p>There were four people ahead of her.</p>
+        <p>She quickly glanced at each one.</p>
+        <p>A man in a camel coat reading emails with the expression of somebody already disappointed by the market. A nanny with a stroller and a child in dinosaur pajamas.</p>
+        <p>She took her place near the pastry case and set the tote down. Her laptop felt heavier in the morning than it ever did at night, as if work acquired mass on the way in.</p>
+        <p>When she reached the register, the barista looked up and recognized her just enough to keep his morning system moving.</p>
+        <p>&ldquo;Morning Walker. Medium oat milk latte and the spinach feta thing?&rdquo; he said.</p>
+        <p>She gave him a faint look. &ldquo;I need to start lying to you.&rdquo;</p>
+        <p>&ldquo;That bad?&rdquo;</p>
+        <p>&ldquo;That predictable.&rdquo;</p>
+        <p>&ldquo;Could be worse.&rdquo; He tapped the order in. &ldquo;At least you&rsquo;re consistent.&rdquo;</p>
+        <p>He slid the pastry into a bag. &ldquo;Six ten.&rdquo;</p>
+        <p>She lifted her phone and brought up Apple Pay.</p>
+        <p>The screen brightened against her face. For a second she saw herself in it. Pale. Tired. A little older than she ought to look for her age.</p>
+        <p>She held it to the reader.</p>
+        <p>Nothing.</p>
+        <p>No sound. No approval. No rejection. Just a dead second hanging in the air.</p>
+        <p>She frowned and tried again.</p>
+        <p>Still nothing.</p>
+        <p>&ldquo;Sometimes this thing glitches,&rdquo; the barista said.</p>
+        <p>&ldquo;Yeah.&rdquo; She looked down at the phone. &ldquo;Hang on.&rdquo;</p>
+        <p>She toggled the wallet app, brought the phone close to her face, thumbed the side button, and tried once more.</p>
+        <p>Nothing.</p>
+        <p>Behind her, the line had grown.</p>
+        <p>She could feel it before she turned and saw it. Bodies stacking up in winter coats. That slight forward lean New Yorkers got when someone else&rsquo;s problem threatened to become their delay.</p>
+        <p>The barista turned the payment terminal toward himself and tapped at it. &ldquo;Try now.&rdquo;</p>
+        <p>She did.</p>
+        <p>Nothing.</p>
+        <p>She slipped the phone into her jacket pocket and dug into her wallet for the physical card. Driver&rsquo;s license. Two receipts. An OMNY card she had been meaning to refill for three days. Her debit card.</p>
+        <p>She inserted it.</p>
+        <p>The machine thought about it, then rejected her with a thin red line.</p>
+        <p>DECLINED.</p>
+        <p>She pressed her hand against her sternum inside her jacket and dropped it.</p>
+        <p>&ldquo;That&rsquo;s weird,&rdquo; she said, too quickly.</p>
+        <p>&ldquo;You want to run it again?&rdquo;</p>
+        <p>&ldquo;I have money.&rdquo;</p>
+        <p>&ldquo;I didn&rsquo;t say you didn&rsquo;t.&rdquo;</p>
+        <p>She reinserted the card, harder this time. Same result. Same pause. Same red line.</p>
+        <p>DECLINED.</p>
+        <p>The barista looked away for half a beat.</p>
+        <p>All at once she was the center of attention. The line behind her going taut with silent opinion.</p>
+        <p>She opened the wallet again.</p>
+        <p>She had stopped carrying cash because the city had trained her not to. Everything was supposed to work with taps now. Phones. Watches. Cards. QR codes. Faces. If you had the right device and enough battery life, the city let you pass.</p>
+        <p>Until it didn&rsquo;t.</p>
+        <p>&ldquo;I&rsquo;ll get it.&rdquo;</p>
+        <p>The voice came from halfway back in line.</p>
+        <p>She turned to find its source.</p>
+        <p>The woman was old enough to remember Broadway Joe. Small, sharp, wearing a brown coat that had been mended at the sleeve and a knit cap flattened by years. One hand on a cane. The other already moving toward a coin purse. Her face had that rent-controlled hardness the city occasionally produced.</p>
+        <p>&ldquo;No, please,&rdquo; the young woman said. &ldquo;You don&rsquo;t have to.&rdquo;</p>
+        <p>&ldquo;It&rsquo;s coffee,&rdquo; the older woman said. &ldquo;Not a kidney.&rdquo;</p>
+        <p>A few people smiled. No one objected. The old woman laid bills on the counter. The barista took them with the half-apologetic efficiency of somebody grateful for rescue and unwilling to acknowledge it as such.</p>
+        <p>Walker picked up the cup and pastry bag.</p>
+        <p>&ldquo;Thank you,&rdquo; she murmured as she moved past the line on the way out.</p>
+        <p>The older woman shrugged. &ldquo;Buy somebody else one when the city forgets how to take care of people.&rdquo;</p>
+        <p>The cold hit her face as soon as the door shut behind her.</p>
+        <p class="interior"><em>Fuck.</em></p>
+        <p>It had to be the card. Fraud freeze. Bank glitch. Bad chip. Something small. Something administrative. Something with a number to call.</p>
+        <p>She unlocked her phone and searched for the nearest ATM.</p>
+        <p>Three blocks west.</p>
+        <p>She started walking, drinking from the coffee before it had settled into itself. Too hot. Then, by the next corner, not hot enough.</p>
+        <p>At the bank branch a short line had already formed outside the ATM vestibule.</p>
+        <p>Four people, then six by the time she reached it. Office workers, a hospital worker in scrubs under her coat, a delivery rider with his helmet clipped to his backpack, a man in construction boots, a woman in leggings and a Canada Goose jacket holding back visible irritation by force of breeding.</p>
+        <p>The people were the usual. The vibe was not.</p>
+        <p>Not anger. Just a growing sense of WTF. A shared private humiliation of people who had expected the invisible systems around them to be servants not masters.</p>
+        <p>&ldquo;Your card too?&rdquo; the nurse asked her.</p>
+        <p>&ldquo;Coffee shop,&rdquo; Walker said.</p>
+        <p>&ldquo;Drugstore for me.&rdquo;</p>
+        <p>A man in a peacoat held up his card as if presenting evidence to a jury. &ldquo;Mine says insufficient funds. Which is insulting because it&rsquo;s not accurate.&rdquo;</p>
+        <p>The woman two places ahead of her wearing navy scrubs under a wool coat kept checking her watch, then her phone, then the street, as if one of them might suddenly begin cooperating. She had the inwardly furious posture of someone used to being obeyed by systems that understood urgency.</p>
+        <p>&ldquo;No, listen to me,&rdquo; she said into the phone. &ldquo;I&rsquo;m trying. My Uber app isn&rsquo;t working and the ATM&rsquo;s dead.&rdquo; A pause. &ldquo;Then have them hold him.&rdquo; Another pause, longer this time. &ldquo;I know what time it is.&rdquo;</p>
+        <p>No one in line looked at her directly after that.</p>
+        <p>An older woman farther back said to no one, &ldquo;They wouldn&rsquo;t release my refill without payment. Blood pressure medicine.&rdquo;</p>
+        <p>The woman in scrubs ended her call and looked at the phone as if to intimidate it into honesty.</p>
+        <p>The line held, not moving, each person now carrying some private version of the same new thought.</p>
+        <p>This wasn&rsquo;t one card.</p>
+        <p>It wasn&rsquo;t one account.</p>
+        <p>Something unseen in the city had gone wrong.</p>
+        <p>A young bank employee appeared on the other side of the glass with a sheet of printer paper and a roll of tape. He looked maybe twenty-two and already defeated by whatever he had been told not to say.</p>
+        <p>He taped the notice to the glass.</p>
+        <p><em><strong>NOTICE:</strong> Due to an overnight systems outage, debit card services are temporarily unavailable. We are working to restore full access as quickly as possible. At this time, we expect service to be restored prior to branch opening at 9:00 AM. We apologize for the inconvenience.</em></p>
+        <p>&ldquo;Inconvenience,&rdquo; the man in construction boots said.</p>
+        <p>No one laughed.</p>
+        <p>Walker checked the time. 7:58.</p>
+        <p>More than an hour.</p>
+        <p>Her phone buzzed.</p>
+        <p>For a hopeful second she thought it might be the bank.</p>
+        <p>Instead it was a notification from Spotify.</p>
+        <p class="device-text"><em>Payment failed. Please update your billing information to continue Premium.</em></p>
+        <p>She stared at it.</p>
+        <p>Of all the possible things to fail first, that one felt perversely intimate.</p>
+        <p>Music was not rent. Not food. Not medicine. But it was the one thing between her and the full weight of the city, and it ran on the same card that had just stopped working. Without it the day arrived unbuffered.</p>
+        <p>She slipped the phone back into her pocket and left the line.</p>
+        <p>At the bus stop on Forty-Second a small crowd was already waiting in the gray wind. When the downtown bus came, she got on with her cold coffee, set the tote against her hip, and tapped her OMNY card.</p>
+        <p class="device-text"><em><strong>INSUFFICIENT FARE</strong></em>.</p>
+        <p>She tapped again. Same answer.</p>
+        <p>&ldquo;Bank card&rsquo;s frozen,&rdquo; she said to the driver. &ldquo;I can&rsquo;t reload it.&rdquo;</p>
+        <p>The driver barely looked at her. &ldquo;Need fare.&rdquo;</p>
+        <p>From halfway down the bus, a voice cut in.</p>
+        <p>&ldquo;Yeah, well, welcome to Earth, sweetheart. Bus ain&rsquo;t free because your iPhone&rsquo;s broke.&rdquo;</p>
+        <p>A few people looked up, then away. The speaker was an older man in a paint-stained jacket, not angry so much as pleased to have found a target younger than himself.</p>
+        <p>The driver shrugged behind the plexiglass. &ldquo;You heard him.&rdquo;</p>
+        <p>She stepped back onto the curb while the doors folded shut in her face.</p>
+        <p>She stood there for a second with the coffee in one hand and the tote dragging at her shoulder, the wind pushing cold through the seams of her jacket. Then she started moving south.</p>
+        <p>Without music the walk felt louder and meaner than it should have.</p>
+        <p>Brakes whining. A bottle skittering in the gutter. Somebody yelling into a phone on Ninth. A truck gate slamming shut hard enough to make her flinch.</p>
+        <p>She kept moving and did what she always did when she was tired or anxious or trying not to care what strangers thought of her.</p>
+        <p>She sorted people.</p>
+        <p>Fast little judgments with each face. That woman in the sheepskin bomber jacket could absorb a bad morning. The delivery guy on the bike could not. The man with the French bulldog in a quilted jacket worth more than her monthly electric bill.</p>
+        <p>She crossed into Midtown.</p>
+        <p>On a side street off Eighth, six or seven people her age were standing outside a co-working space in the cold, all of them holding phones and looking at the door. The access panel was dark. Whatever app it ran on had stopped running it. One of them was on hold. Two were typing. One was just staring at the panel with his laptop bag over one shoulder and his coffee going cold in his hand.</p>
+        <p>She didn&rsquo;t stop. The guy with the cold coffee was still looking at the panel when she passed.</p>
+        <p>She crossed mid-block and kept her eyes on the pavement. At the next corner a man in business clothes was yelling into a phone that no one cared his card had stopped working.</p>
+        <p>A block later she passed a pharmacy with a handwritten sign taped to the door apologizing for delays due to <em>system issues</em>, which made her slow her step for half a second.</p>
+        <p>By the time she crossed Canal the city had changed dialect again.</p>
+        <p>The streets narrowed. Delivery trucks clogged the curbs. Steam rose from metal grates and drifted under faded signs in Chinese and English. Whole blocks smelled like frying oil, damp cardboard, fish and exhaust.</p>
+        <p>Chinatown held its ground by force of density. By stubbornness. By being too useful to disappear all at once.</p>
+        <p>The building on Mott Street had been a garment warehouse before it was anything else. Before the design studios on one and two. Before the third floor turned into server heat, overnight takeout containers, and a cash runway shortening every week. Before the company she co-founded with three other twentysomethings installed a rolling state of overwork, cheap stimulants, and not quite enough capital into its walls.</p>
+        <p>It didn&rsquo;t announce itself.</p>
+        <p>The reader flashed green.</p>
+        <p>The lock clicked open.</p>
+        <p>The reader returned to red when the door closed behind her.</p>
+        <p>She climbed to the third floor and pushed through the glass door stenciled with <em>Sovren</em> into the bullpen.</p>
+        <p>The first thing she saw was one of her colleagues asleep on the couch.</p>
+        <p>He was still in yesterday&rsquo;s clothes.</p>
+        <p>A green camo hoodie pulled over his face. One arm hanging to the floor. An open laptop. An empty takeout container.</p>
+        <p>Two monitors glowed on the nearest desk with code or data or some other language of unfinished work still spread across them. The overhead lights in the main room were off except for the ones over the far bank of standing desks. The heating system clicked and rattled in the wall. Somewhere a server hummed with insect steadiness.</p>
+        <p>She stood there with her cold coffee and soggy spinach-thing, the residue of the walk downtown she had not planned to take.</p>
+        <p>Outside, Chinatown was fully awake now. Trucks unloading. Gates rattling up.</p>
+        <p>Her coworker slept through all of it.</p>
+        <p>She hung up her jacket, pulled out her chair, opened her laptop. The usual pile of overnight tickets, a client flag, seventeen emails that could have been one. All waiting.</p>
+        <p>Her phone buzzed twice in her pocket. She checked it without thinking.</p>
+        <p>The bank. Then Spotify. Service restored. Normal resumed. No explanation beyond the apology, as if the morning had been a minor clerical error the city had quietly corrected hoping no one noticed.</p>
+        <p>She set the phone face-down and looked at her screen.</p>
+        <p>Somewhere a switch had been flipped back. Someone she&rsquo;d never meet had decided the day could proceed. Just like that.</p>
+        <p>It was 9:01 a.m. She put her headphones on and got to work.</p>
+        <p>It probably was nothing. As Founder, Dakota Walker had more important things to deal with.</p>
+
+        <hr class="scene-break" aria-hidden="true" style="border:0; border-top:1px solid currentColor; opacity:.25; width:40%; margin:2.75rem auto;">
+
+        <h2 class="chapter-subhead" style="font-family:'JetBrains Mono', monospace; font-size:.85rem; letter-spacing:.18em; text-transform:uppercase; opacity:.65; text-align:center; margin:2rem 0 1.5rem;">Croton-on-Hudson, NY &middot; 09:08 EST</h2>
+
+        <p class="first-graf"><span class="lift">At 9:08 AM the executive director</span> prepared the branch for a 9:30 AM opening the way she had opened it for nine years.</p>
+        <p>Key in the lock. Lights. The furnace clicking on in the ceiling above the lobby.</p>
+        <p>The Hudson River Community Federal Credit Union. Croton-on-Hudson.</p>
+        <p>Twelve hundred square feet between a hardware store and a pizza place. One branch. Six employees. 4,138 members. A brass plaque by the door that said <em>Chartered 1974</em>.</p>
+        <p>She set her bag behind the counter. Logged into the core system.</p>
+        <p>The status light on the dashboard was red.</p>
+        <p>It had been green every morning for nine years. She had stopped noticing it years ago because it never changed.</p>
+        <p>Until now.</p>
+        <p>Member database. Zero records.</p>
+        <p>Accounts summary. Zero.</p>
+        <p>Transaction ledger. Zero.</p>
+        <p>She logged out. Logged back in. Same.</p>
+        <p>The cursor blinked against nothing.</p>
+        <p>She called the core system vendor.</p>
+        <p>Twenty minutes on hold. A technician. Diagnostics she had already run. Escalation. Another hold. A supervisor who asked about the backup.</p>
+        <p>Cloud-replicated, she said. Same vendor.</p>
+        <p>The supervisor went quiet.</p>
+        <p>She did not open the branch at 9:30 AM.</p>
+        <p>She taped a handwritten notice to the glass door and called the Board chair.</p>
+        <p>System outage. Under investigation. Accounts federally insured. Working to restore.</p>
+        <p>At her desk the phone was already ringing. Emails were pinging.</p>
+        <p>One. Then three. Then accelerating.</p>
+        <p>A man whose direct deposit had not arrived. A woman whose debit card was declined at the gas station. A member locked out of online banking since six in the morning. A small business owner whose payroll was supposed to clear and had not. An elderly woman whose pharmacy rejected her pre-authorized payment for insulin wanted to know why their system did not recognize her name.</p>
+        <p>She said it eleven times. She typed it even more.</p>
+        <p>The elderly woman said she was going to call Channel 12.</p>
+        <p>She stopped answering after that. The words had stopped meaning anything. The people at the other end could sense it.</p>
+        <p>The two tellers sat in the break room with coffee. The coffee was fine. Everything else was not.</p>
+        <p>She called the vendor again.</p>
+        <p>The vendor was not taking calls.</p>
+        <p>The furnace hummed in the ceiling. Warm air through the vents into an empty welcome area. Doing its job.</p>
+        <p>She sat at her desk in the closed branch.</p>
+        <p>Red light on the dashboard. Handwritten sign on the glass. 4,138 members who did not exist in a system that was supposed to know who they were.</p>
+        <p>She did not know what to do.</p>
+        <p>The light on her dashboard stayed red.</p>
+        <p>It did not know how to do anything else.</p></article></section>
+<section class="chapter" id="ch2"><p class="ch-kicker">CHAPTER 02</p><h2 class="ch-title">Chapter Two</h2><div class="chapter-slug"><div class="slug-row"><span class="slug-key">CH.</span><span class="slug-val">02</span></div><div class="slug-row"><span class="slug-key">LOC.</span><span class="slug-val">Chinatown, NYC</span></div><div class="slug-row"><span class="slug-key">TIME</span><span class="slug-val">10:00 EST</span></div><div class="slug-rule" aria-hidden="true"></div></div><article class="chapter-body"><p class="first-graf"><span class="lift">The building heating system groaned.</span></p>
+        <p>Even with headphones on Walker could hear it trying to bring minimal life support to the Chinatown building with questionable insulation on a cold damp Manhattan February morning.</p>
+        <p>She tossed her cold cup of coffee into a trash can that had not been emptied since the Holidays and pulled up her schedule for the day.</p>
+        <p>She looked toward a wall of mounted whiteboards and multi-colored dry pen hieroglyphics. Flowcharts. Client prospect lists. Network uptime and record rationalization metrics. Together they were the analog dashboard of the small fintech start-up she founded almost two years ago.</p>
+        <p>She did not need the dashboard to remind her what Sovren did and why.</p>
+        <p>It was a data hygiene tool for banks and other financial institutions. It merged the duplicate customer records they accumulated into a single authoritative customer record. A customer who existed as three different entries in three different bank systems that didn&rsquo;t talk to each other. Three names. Two addresses. No way to know which version was real. Sovren resolved them into one. One record. One truth.</p>
+        <p>The mess cost the banks time and money. It created frustration for their customers.</p>
+        <p>When Sovren sent a null payload to the event stream to update the system, the connected systems read it as a statement that the customer record had never existed and they erased it. A <em>DELETE</em> command would have left a trail. This left nothing. The systems had been engineered to treat Sovren as the authoritative source on identity. If Sovren said a record was never there, it was never there.</p>
+        <p>Clean. Consistent across every trial.</p>
+        <p>Thirty-one community banks and financial institutions had signed on and provided that authority without a fight. Sovren was cheaper and more efficient than the reconciliation desks they were laying off, and the implementation contract called its records canonical because someone&rsquo;s lawyer had copied the word off a bigger vendor&rsquo;s paper.</p>
+        <p>She turned in her chair to look behind her at another wall.</p>
+        <p>A laptop was open on the floor beside the couch, the screen still lit, the battery at eleven percent. She had not seen it till now.</p>
+        <p>She leaned forward to look at it.</p>
+        <p>On the screen a timestamp read 05:47.22.</p>
+        <p class="device-text"><em>Restore completed. All systems nominal.</em></p>
+        <p>Below that, a cascade of alert records she did not have the context to read yet. Below that, something labeled <em>Project Rollback</em>, a name she had never seen before.</p>
+        <p>He heard the squeal of her chair.</p>
+        <p>He pulled the hood off his face and looked up.</p>
+        <p>He had been asleep since 6:02 AM.</p>
+        <p>He knew the time because he had looked at the clock when he finally stopped watching the logs and allowed himself to believe the restore had completed cleanly.</p>
+        <p>&ldquo;Morning,&rdquo; she said. She did not turn around.</p>
+        <p>Okafor said nothing for a moment.</p>
+        <p>She could hear him becoming fully awake, the human sounds of it: the shift on the couch, the intake of breath, the silence that followed while a person reoriented to where they were and what they had been doing before they stopped.</p>
+        <p>&ldquo;How long have you been here.&rdquo;</p>
+        <p>&ldquo;Twelve minutes.&rdquo;</p>
+        <p>&ldquo;You saw the screen.&rdquo;</p>
+        <p>&ldquo;Yes.&rdquo;</p>
+        <p>She swung the chair around to face him.</p>
+        <p>He was sitting with his elbows on his knees looking at the floor between his feet. He looked like a man who had rehearsed a conversation and had then discovered that the rehearsal was useless.</p>
+        <p>&ldquo;You want to start,&rdquo; she said, &ldquo;or should I ask questions.&rdquo;</p>
+        <p>He looked up at her.</p>
+        <p>&ldquo;I&rsquo;ll start,&rdquo; he said.</p>
+        <p>He started in the middle and backed up twice before he found the beginning.</p>
+        <p>The beginning was six weeks ago.</p>
+        <p>He had been working late, which was not unusual, and he had been thinking about a data integrity problem, which was not unusual, and the thinking had led him to a question he could not answer without running a test. The question was simple: if Sovren merged two customer records incorrectly, could the merge be completely and cleanly reversed across every connected system the bank touched.</p>
+        <p>He had called it Project Rollback.</p>
+        <p>He had run the first trial in the staging environment at eleven-thirty on a Tuesday night.</p>
+        <p>The staging environment ran on the server rack in the back. She insisted from the beginning that anything touching live client architectures stayed off the cloud. Air-gapped. No external connection. The rack was hers before it was anyone else&rsquo;s.</p>
+        <p>&ldquo;Without telling anyone,&rdquo; she said.</p>
+        <p>&ldquo;It was preliminary.&rdquo;</p>
+        <p>&ldquo;It was six weeks ago, Caden.&rdquo;</p>
+        <p>The name landed differently than she intended.</p>
+        <p>She hadn&rsquo;t used it in weeks. People at Sovren didn&rsquo;t use first names. That was a thing that had just happened without anyone deciding it.</p>
+        <p>&ldquo;I didn&rsquo;t know what I had yet.&rdquo;</p>
+        <p>&ldquo;That is such bullshit.&rdquo; She said it flat.</p>
+        <p>&ldquo;For six weeks. On my server rack. Without telling me.&rdquo;</p>
+        <p>He met her eyes and held them. She noted it without softening.</p>
+        <p>&ldquo;I was going to tell you.&rdquo;</p>
+        <p>&ldquo;When.&rdquo;</p>
+        <p>He didn&rsquo;t answer.</p>
+        <p>&ldquo;Fucking when, Caden.&rdquo;</p>
+        <p>He looked at the floor.</p>
+        <p>&ldquo;I didn&rsquo;t know what I had yet, Walker.&rdquo;</p>
+        <p>He pulled the laptop off the floor and set it on the desk between them.</p>
+        <p>He walked her through the Project Rollback logs from the beginning. All twenty-three trials. The staging environment data was detailed and clean. He had documented each run carefully, which was either conscientiousness or, she thought, the behavior of someone who had understood early that what he was looking at was going to require documentation.</p>
+        <p>&ldquo;Walk me through the cascade,&rdquo; she said.</p>
+        <p>He walked her through the cascade.</p>
+        <p>The deletion spread outward through every connected system like something moving through water, fast and quiet and without resistance, because the systems doing it had been designed to work exactly this way.</p>
+        <p>Her arms were folded across her chest. She did not remember putting them there.</p>
+        <p>She asked the questions in the right order because she had enough of the architecture in her head to know which questions needed to come first.</p>
+        <p>How far did the propagation reach. What determined the boundary. Could a target be specified or was the firing event indiscriminate. Was the cascade reversible after a given window.</p>
+        <p>He answered each one.</p>
+        <p>She wiped her hand down her face.</p>
+        <p>&ldquo;The money,&rdquo; she said. &ldquo;Banks never lose assets quietly.&rdquo;</p>
+        <p>&ldquo;What?&rdquo;</p>
+        <p>&ldquo;If we erase a customer with a mortgage, the bank loses an asset. The core system&rsquo;s nightly reconciliation would scream. It would throw a critical failure flag before midnight. Why isn&rsquo;t it?&rdquo;</p>
+        <p>Okafor stared at her.</p>
+        <p>Outside, a truck somewhere on Canal was doing something loud and repetitive. Neither noticed.</p>
+        <p>She pulled her chair over and sat down.</p>
+        <p>&ldquo;It would,&rdquo; Okafor said. &ldquo;If the money disappeared.&rdquo;</p>
+        <p>She stared at him.</p>
+        <p>She was already working three steps ahead of the sentence, mapping the data architecture in her head.</p>
+        <p>&ldquo;But it doesn&rsquo;t disappear,&rdquo; she said.</p>
+        <p>&ldquo;Correct.&rdquo;</p>
+        <p>&ldquo;The system doesn&rsquo;t know anything is wrong because the money is still sitting there in the bank&rsquo;s records. It just doesn&rsquo;t know whose it is.&rdquo;</p>
+        <p>&ldquo;An unattributed balance,&rdquo; he said. &ldquo;It gets parked in a suspense account for manual review.&rdquo;</p>
+        <p>&ldquo;Which nobody looks at until morning.&rdquo;</p>
+        <p>&ldquo;At least,&rdquo; said Okafor. &ldquo;And then they have to try and match the funds to account identities that no longer exist.&rdquo;</p>
+        <p>She looked around the office to avoid looking at Okafor.</p>
+        <p>The monitors glowed. The server hummed. The heating system clicked twice in the wall and was quiet.</p>
+        <p>&ldquo;Last night?&rdquo; she said.</p>
+        <p>&ldquo;I pushed a code update at eleven forty-two. There was a misconfiguration in the production branch. The update triggered a live cascade across a segment of the active client base.&rdquo;</p>
+        <p>&ldquo;For how long.&rdquo;</p>
+        <p>&ldquo;From approximately 1:14 AM to 5:47 AM.&rdquo;</p>
+        <p>She did not say anything immediately.</p>
+        <p>Approximately was not approximate. She could see from the logs that the timestamp precision was to the second. He was using approximately because the number that followed needed a small cushion of linguistic softness before it could be said out loud.</p>
+        <p>&ldquo;How many records impacted,&rdquo; she said.</p>
+        <p>He looked at the screen. &ldquo;Sixty-seven thousand, eight hundred and forty-one.&rdquo;</p>
+        <p>She looked at the screen too.</p>
+        <p>Dakota Walker felt her hand move to her collarbone before she knew it was moving.</p>
+        <p>The gold key was on a necklace under her shirt. She pressed her thumb against it through the fabric and held it there for a second, then made herself stop.</p>
+        <p>She knew what it looked like when a system decided a person was no longer part of it. She had watched her father discover it at a kitchen table in 2008. He had not said anything for a long time. Neither had she.</p>
+        <p>She put her hands on the table.</p>
+        <p>&ldquo;People,&rdquo; she said.</p>
+        <p>He kept his eyes on his screen.</p>
+        <p>&ldquo;Customer identity records. Some business accounts. Mostly personal.&rdquo;</p>
+        <p>&ldquo;And they were gone from 1:14 to 5:47.&rdquo;</p>
+        <p>&ldquo;Wiped from every system Sovren has previously touched.&rdquo;</p>
+        <p>&ldquo;Which in this case was Sovren&rsquo;s regional client network.&rdquo;</p>
+        <p>&ldquo;The clients we have active in the region, yes.&rdquo;</p>
+        <p>She sat with this.</p>
+        <p>Running a process to avoid thinking about other things. The woman in navy scrubs. <em>Have them hold him</em>.</p>
+        <p>&ldquo;The restore worked,&rdquo; she said. A petition more than a statement.</p>
+        <p>&ldquo;Yes.&rdquo;</p>
+        <p>&ldquo;Completely clean.&rdquo;</p>
+        <p>&ldquo;The cascade confirmation shows full record restoration across all affected systems. No residuals.&rdquo;</p>
+        <p>&ldquo;And the bank&rsquo;s explanation to customers.&rdquo;</p>
+        <p>&ldquo;Overnight systems outage. Resolved prior to each branch opening.&rdquo;</p>
+        <p>&ldquo;They bought it.&rdquo;</p>
+        <p>&ldquo;So far.&rdquo;</p>
+        <p>&ldquo;The automated alert,&rdquo; she said. &ldquo;What went out?&rdquo;</p>
+        <p>&ldquo;Standard P1 incident notification. Elevated identity validation error rates across connected client systems. Investigation in progress. ETA for resolution to follow.&rdquo;</p>
+        <p>&ldquo;Time stamp.&rdquo;</p>
+        <p>&ldquo;1:52 AM.&rdquo;</p>
+        <p>She nodded slowly. Not approval. Cataloguing.</p>
+        <p>&ldquo;So they knew something was wrong at 1:52.&rdquo;</p>
+        <p>&ldquo;They knew we knew something was wrong at 1:52. Which is different.&rdquo;</p>
+        <p>&ldquo;And the follow-up?&rdquo;</p>
+        <p>He looked at the screen.</p>
+        <p>&ldquo;The restore confirmation went to technical contacts at 5:51.&rdquo;</p>
+        <p>&ldquo;Three hours and fifty-nine minutes between the P1 alert and the resolution notice.&rdquo;</p>
+        <p>&ldquo;Yes.&rdquo;</p>
+        <p>&ldquo;And in between.&rdquo;</p>
+        <p>He said nothing.</p>
+        <p>She understood what he had done.</p>
+        <p>He had let the automation handle the notification because the automation was honest in its explanation: elevated error rates, investigation in progress. All were technically accurate. He had managed everything else personally, on the phone, in the middle of the night, at the level of detail he could control. He had kept the gap between what the alert said and what he knew carefully shut.</p>
+        <p>She nodded once.</p>
+        <p>She picked up her phone. Opened her contacts. Scrolled once. Scrolled again. She sighed and put it down.</p>
+        <p>&ldquo;The meeting is at two,&rdquo; she said.</p>
+        <p>&ldquo;I know the meeting is at two.&rdquo;</p>
+        <p>She looked at him. He looked at her. Neither of them said what that meant.</p>
+        <p>She turned back to the screen.</p>
+        <p>&ldquo;Take me through trial seven again.&rdquo;</p>
+        <p>The second time through, Okafor&rsquo;s hedging was gone. There was nothing left to manage.</p>
+        <p>Project Rollback had asked a different question. If Sovren resolved a record incorrectly, could the resolution be fully reversed.</p>
+        <p>&ldquo;It doesn&rsquo;t undo the merge,&rdquo; she said.</p>
+        <p>&ldquo;No.&rdquo;</p>
+        <p>&ldquo;It tells every system that touched ours that the person was never there.&rdquo;</p>
+        <p>&ldquo;Right.&rdquo;</p>
+        <p>&ldquo;Because every system treats us as the source of truth on identity.&rdquo;</p>
+        <p>&ldquo;That&rsquo;s the product. That&rsquo;s why it works.&rdquo;</p>
+        <p>She looked at the cascade propagation data one more time. The clean geometry of it. The speed. The silence.</p>
+        <p>She stood up, walked to the window that looked over the side street. A produce vendor below was unloading crates from a panel van, moving fast in the cold, breath visible, each crate handled with the efficiency of someone who had done this ten thousand times.</p>
+        <p>She came back.</p>
+        <p>Sat down.</p>
+        <p>Looked at him.</p>
+        <p>He looked at her.</p>
+        <p>There was nothing she could say that would change anything. Not at 10:14, with the rest of the team arriving in forty-six minutes and a meeting on the calendar at two.</p>
+        <p>&ldquo;You ran this for six weeks,&rdquo; she said. &ldquo;Without telling me.&rdquo;</p>
+        <p>&ldquo;I didn&rsquo;t know what I had until trial four.&rdquo;</p>
+        <p>&ldquo;You knew something, Okafor.&rdquo;</p>
+        <p>He said nothing.</p>
+        <p>&ldquo;By trial four you knew something was wrong with the question you were asking. I can see it in the notes. You knew the answer you were getting wasn&rsquo;t the answer you&rsquo;d gone looking for. You kept running trials anyway.&rdquo;</p>
+        <p>&ldquo;I needed to understand the scope.&rdquo;</p>
+        <p>&ldquo;That&rsquo;s not why.&rdquo;</p>
+        <p>He looked at the floor.</p>
+        <p>She waited.</p>
+        <p>&ldquo;No,&rdquo; he said finally. &ldquo;That&rsquo;s not why.&rdquo;</p>
+        <p>She let that sit.</p>
+        <p>&ldquo;Why, then.&rdquo;</p>
+        <p>He was quiet for long enough that she thought he wasn&rsquo;t going to answer.</p>
+        <p>He looked up at her.</p>
+        <p>&ldquo;Because I built it,&rdquo; he said. &ldquo;And I needed to know what I built.&rdquo;</p>
+        <p>She stared at him for a long moment.</p>
+        <p>&ldquo;That&rsquo;s not the whole answer.&rdquo;</p>
+        <p>He didn&rsquo;t say anything.</p>
+        <p>&ldquo;You wanted to know if you were as good as you thought you were.&rdquo;</p>
+        <p>His jaw set, like the words cost him something to hear.</p>
+        <p>&ldquo;That&rsquo;s not fair,&rdquo; he said.</p>
+        <p>&ldquo;You ran twenty-three trials on a live architecture capability that could erase people from institutional systems. Alone. In secret. For six weeks.&rdquo;</p>
+        <p>Her voice was level.</p>
+        <p>&ldquo;That&rsquo;s not due diligence, Caden. That&rsquo;s ego. And we are sitting here right now because of it.&rdquo;</p>
+        <p>He looked at his hands and then at the screen and then at nothing in particular.</p>
+        <p>She had said it. It was in the room now. She wasn&rsquo;t going to walk it back.</p>
+        <p>He looked up.</p>
+        <p>&ldquo;Okay,&rdquo; she said.</p>
+        <p>&ldquo;That&rsquo;s not forgiveness.&rdquo;</p>
+        <p>&ldquo;No,&rdquo; she said. &ldquo;It isn&rsquo;t.&rdquo;</p>
+        <p>He looked down. Exhaled through his mouth. His shoulders dropped. He put both hands in his lap as if to pray and stared at them for a moment.</p>
+        <p>She was looking at the window. She needed to not be looking at him for a minute.</p>
+        <p>She pressed her thumb against the key again without meaning to. She made herself stop again.</p>
+        <p>She waited.</p>
+        <p>Then he said it.</p>
+        <p>Quietly. Saying it as if he had been carrying it alone long enough that saying it out loud was more important than whether anyone heard it.</p>
+        <p>&ldquo;We built a scalpel,&rdquo; he said. &ldquo;We did not know it was also a bomb.&rdquo;</p>
+        <p>She did not say anything.</p>
+        <p>The word they were both not saying was now in the room. Neither of them reached for it.</p>
+        <p>Not yet.</p>
+        <p>She retrieved her coffee cup out of the trash. She drank it cold.</p>
+        <p>&ldquo;What do we know right now,&rdquo; she said. &ldquo;This morning. Just what we actually know.&rdquo;</p>
+        <p>He said nothing, which was the signal to continue.</p>
+        <p>&ldquo;We know the cascade is real. We know it propagated through the NY regional active banking network last night. We know almost sixty-eight thousand accounts were affected and the restore completed clean. We know the banks&rsquo; explanation is holding. We know Project Rollback has been running in staging for six weeks and the production event was not intentional.&rdquo; She paused. &ldquo;We know the meeting with the analyst is at two.&rdquo;</p>
+        <p>&ldquo;Yes.&rdquo;</p>
+        <p>&ldquo;And she&rsquo;s read the data room.&rdquo;</p>
+        <p>&ldquo;Yes.&rdquo;</p>
+        <p>&ldquo;Everything in the data room.&rdquo;</p>
+        <p>&ldquo;Yes.&rdquo;</p>
+        <p>She looked at the window. The produce vendor had finished unloading. The van was gone. The side street had resumed its ordinary indifference.</p>
+        <p>&ldquo;She&rsquo;s going to ask about the roadmap. She&rsquo;s going to ask about the technical architecture. She&rsquo;s going to ask follow-up questions about the deduplication engine that she did not ask the first time.&rdquo;</p>
+        <p>&ldquo;I know.&rdquo;</p>
+        <p>He looked at the screen for a moment. Then at her.</p>
+        <p>&ldquo;What are you saying.&rdquo;</p>
+        <p>&ldquo;I&rsquo;m saying we need to decide. Right now. What we know and what we say. Before anyone else gets here.&rdquo;</p>
+        <p>He put his hands in his lap.</p>
+        <p>Outside, Manhattan was past ten o&rsquo;clock and fully operational.</p>
+        <p>&ldquo;We go to the meeting,&rdquo; he said.</p>
+        <p>&ldquo;We go to the meeting.&rdquo;</p>
+        <p>&ldquo;We don&rsquo;t say anything about last night.&rdquo;</p>
+        <p>She held his look for a moment. &ldquo;Not yet.&rdquo;</p>
+        <p>&ldquo;Not yet,&rdquo; he said.</p>
+        <p>She set the cold coffee down.</p>
+        <p>He looked at the restore timestamp still visible in one corner of the screen. 05:47.22.</p>
+        <p>She had walked through the door of this building over an hour ago, the same as she did every morning, and something had already been waiting for her. She had not known that then. She had put her headphones on and gotten to work.</p>
+        <p>She looked at the timestamp now.</p>
+        <p>But not this morning.</p>
+        <p>The pharmacy on the walk downtown. The handwritten sign. <em>System issues</em>. She had walked past it.</p>
+        <p>She was still walking.</p>
+        <p>&ldquo;Walk me through trial four again,&rdquo; she said.</p>
+        <p>He walked her through trial four.</p>
+        <p>The morning continued.</p></article></section>
+<section class="chapter" id="ch3"><p class="ch-kicker">CHAPTER 03</p><h2 class="ch-title">Chapter Three</h2><div class="chapter-slug"><div class="slug-row"><span class="slug-key">CH.</span><span class="slug-val">03</span></div><div class="slug-row"><span class="slug-key">LOC.</span><span class="slug-val">Tehran, Iran</span></div><div class="slug-row"><span class="slug-key">TIME</span><span class="slug-val">Pre-dawn IRST</span></div><div class="slug-rule" aria-hidden="true"></div></div><article class="chapter-body"><p class="first-graf"><span class="lift">It was still dark when he crossed Karim Khan,</span> though the darkness had thinned enough for the city to begin showing its injuries.</p>
+        <p>Tehran after a night like that did not look conquered. It looked used.</p>
+        <p>Beaten down and still moving. As if violence here had become less an event than a weather pattern. Something that rolled through, did its damage, then lingered in the air long after the noise was gone.</p>
+        <p>The young man walked fast with his backpack slung over one shoulder and one hand in the pocket of his jacket.</p>
+        <p>From a distance he could have been in any city on earth. Black sneakers. Loose dark pants. Faded olive coat. Hood pulled low. Head down. Phone in hand. One more young person built for screens and deadlines and a future that kept failing to arrive.</p>
+        <p>Only here the sidewalks still held shattered glass.</p>
+        <p>Two burned cars sat nose to nose at an intersection as if they had crawled toward each other for warmth and died there. One was missing its windows. The other had lost its paint and now wore the dull peeled look of cooked metal.</p>
+        <p>The air carried the residue of the night. Burned rubber. Diesel. Smoke. Cordite. The hot mineral smell of scorched metal. It sat at the back of the throat and stayed there.</p>
+        <p>He stepped around a line of dark bags laid against the curb under gray army blankets. No one stood with them. No one cried over them. Dawn had not reached the hour for grief. There were municipal men farther up the street hosing blood into the gutter with the detached efficiency of people assigned to a recurring task.</p>
+        <p>He looked once, then away.</p>
+        <p>Above him, mounted speakers crackled to life on a concrete utility pole and a male voice, flat and overamplified, spilled into the street.</p>
+        <p class="device-text">Citizens are instructed to avoid unlawful gatherings. Curfew restrictions remain in force in designated areas. Cooperation with security forces is your patriotic duty.</p>
+        <p>Then, without pause, a verse from the Qur&rsquo;an. Then a warning about sedition. Then patriotic music, thin and metallic through the public address horns.</p>
+        <p>He kept walking.</p>
+        <p>His phone showed the time, the battery level, and nothing else that mattered. No signal beyond the local carrier tag. No internet. The state had shut that down again overnight, and the entire city had been folded inward.</p>
+        <p>He slipped the phone into his coat pocket and adjusted the backpack.</p>
+        <p>Inside were a thermos of tea wrapped in an old towel, a laptop in a padded sleeve, a charger, a cheap notebook, a copy of the Qur&rsquo;an his mother had given him when he was thirteen, and a protein bar that had been in there long enough to qualify as historical material.</p>
+        <p>At the next corner he looked toward the schoolyard where boys used to play football in the late afternoon under cheap floodlights. The chain-link fence was still there. So were the lights. But the field itself had been covered with white sheets weighted at the corners by chunks of brick. Men moved quietly among them with clipboards and surgical masks. A temporary morgue. Or maybe not so temporary anymore.</p>
+        <p>The dead didn&rsquo;t stop the city. It bent around them and kept going.</p>
+        <p>He turned toward Vali-e Asr and found what he already knew he would find. No buses. No trams. No metro entrance open. The transit stops held knots of stranded people looking down the road as if disappointment might eventually arrive in uniform and explain itself.</p>
+        <p>He checked the time again.</p>
+        <p>A pressure began to build low in his chest, not dramatic at first. Just the tightening of numbers. Distance. Delay. The consequences of being late. The faces waiting for him at the other end of the drive. The questions. The reports. The look from the section chief that was worse than shouting.</p>
+        <p>He could not show up late. Not there. Not now.</p>
+        <p>A taxi rolled slowly through the intersection, yellow body streaked with dust, one headlamp out. He stepped off the curb and raised a hand. The driver saw him and kept going.</p>
+        <p>The young man moved farther into the street.</p>
+        <p>This time the taxi stopped.</p>
+        <p>The driver leaned across the passenger seat and lowered the window two inches. He was maybe fifty. Heavy eyebrows, day-old beard, cigarette behind one ear. A man already tired of the morning.</p>
+        <p>&ldquo;Where?&rdquo;</p>
+        <p>The young man named a point outside the city.</p>
+        <p>The driver barked a laugh. &ldquo;Public roads are blocked. No buses. No fuel coming in. Go ask the government.&rdquo;</p>
+        <p>He almost said, I work for the government. He stared silently at the driver.</p>
+        <p>Instead he opened his coat, took out a card from the inside pocket, and held it up in the weak blue streetlight.</p>
+        <p>The driver&rsquo;s face changed at once. His mouth tightened. His eyes flicked from the card to the young man&rsquo;s face and then away again.</p>
+        <p>His fear had been ground down by habit into something that looked like calculation, obedience with the terror worn off it.</p>
+        <p>The card identified him as attached to a special technical unit under the Islamic Revolutionary Guard Corps. <em>Farandeh-ye Ghand-e Cyberi.</em> The IRGC Cyber Electronic Command. Something quieter. More ambiguous. The kind of branch ordinary people did not fully understand and had no wish to understand better.</p>
+        <p>The young man hated the card. Hated what it did to people&rsquo;s posture. Hated the way doors opened or voices flattened when it appeared. Hated the parts of himself that had learned to use it anyway.</p>
+        <p>&ldquo;Please,&rdquo; he said, and heard how false that sounded after the card was already in view.</p>
+        <p>The driver unlocked the doors.</p>
+        <p>He got in.</p>
+        <p>The cab smelled of stale tobacco, vinyl, and the faint medicinal scent of wintergreen gum. The driver pulled away without another word.</p>
+        <p>For a few minutes they moved through the lower city in silence. Burned barricades. Charred dumpsters. Posters of martyrs and clerics pasted over older posters advertising mobile plans and skin cream and exam prep courses.</p>
+        <p>The young man set the backpack between his shoes and looked out the window.</p>
+        <p>He saw his own reflection layered over the city.</p>
+        <p>Pale face. Unshaven jaw. A look now worn by young men in every country with a data center and a rent crisis. Sleepless. Guarded. Slightly dislocated from the physical world.</p>
+        <p>He thought of the others already waiting at the site.</p>
+        <p>They would have made the same journey in different ways, each carrying some version of the same private life in a bag. Tea. Headphones. Family photos. Pills for stomach acid and panic.</p>
+        <p>People liked to imagine institutions as monoliths. Especially institutions like theirs. Disciplined. Ideological. Smooth.</p>
+        <p>The taxi merged onto the highway heading west.</p>
+        <p>Here the city spread and flattened. Apartment blocks gave way to industrial strips, then warehouse lots, then factories behind dirty walls. Billboards rose over the road in giant stages of contradiction. A perfume advertisement with a woman&rsquo;s face mostly scratched away. A martyr poster. A smiling family promoting domestic manufacturing under a sky too blue to have been real even before the smoke.</p>
+        <p>The farther they drove, the less visible the uprising became. Fires reduced to stains. Rage reduced to checkpoints and roadblocks and repaired lanes.</p>
+        <p>The driver spoke for the first time in ten minutes.</p>
+        <p>&ldquo;Long night.&rdquo;</p>
+        <p>The young man looked at him.</p>
+        <p>The driver kept his eyes on the road. &ldquo;My son is your age. He was out there somewhere.&rdquo; He nodded back toward the city. &ldquo;Maybe still is.&rdquo;</p>
+        <p>The young man said nothing.</p>
+        <p>After a moment the driver added, &ldquo;You people should figure out what you&rsquo;re doing to this country.&rdquo;</p>
+        <p>The young man almost said, You people. As if he were not the same age as the son. As if he had not grown up under the same sermons, the same shortages, the same stale lies about sacrifice and destiny. As if he were not also carrying a bag and a laptop through the wreckage of somebody else&rsquo;s decisions.</p>
+        <p>But the card in his pocket had already made argument impossible.</p>
+        <p>He turned back to the window.</p>
+        <p>Thirty kilometers outside Tehran, the taxi left the highway and rolled onto a gravel road edged by dead winter grass and rusted fencing. There was an abandoned gatehouse at the entrance, windows blown out, one side collapsed inward. The gate beside it stood open, chained back years ago and never repaired.</p>
+        <p>Beyond it sat a cluster of low buildings scattered without logic across a flat stretch of dirt. Quonset huts, utility sheds, prefab offices painted the same color as dust. Nothing about the place suggested importance. That was the point. It looked like somewhere agricultural records might be stored. Or irrigation maps. Or spare parts for tractors nobody used anymore.</p>
+        <p>The taxi slowed near the only structure that mattered.</p>
+        <p>From the outside it was just a reinforced concrete mound with a steel door set into one side, half-buried in packed earth. No sign. No visible antenna array. No flags. No armed guards in sight. The regime had many styles of power. This was one of its favorite kinds. Ugly, hidden, and expensive.</p>
+        <p>The young man handed the driver folded bills from an emergency stash he kept inside the laptop sleeve.</p>
+        <p>The driver hesitated, then took them.</p>
+        <p>For a moment neither man moved.</p>
+        <p>Then the young man got out, slung the backpack over his shoulder, and closed the door without thanking him.</p>
+        <p>He felt bad about that immediately and kept walking anyway.</p>
+        <p>At the steel door he punched in the access code from memory. The indicator light shifted from red to green and the latch released with a heavy metallic click.</p>
+        <p>He pulled the door shut behind him. The noise of the city was gone as if it had never existed. He adjusted the backpack and walked toward the voices.</p>
+        <p>The smell hit him first.</p>
+        <p>Humidity from overworked cooling systems. Dust. Warm plastic. Reheated rice. Saffron.</p>
+        <p>Fluorescent light spilled down the narrow hall. Somewhere deeper inside he could hear the murmur of voices, keyboard chatter, a printer spitting pages, and one burst of laughter cut short almost as soon as it began.</p>
+        <p>Outside, the capital had staggered through another night of gunfire, slogans, bodies, and smoke.</p>
+        <p>Down here, nothing had changed for the Operator.</p>
+        <p>He worked the shift.</p>
+        <p>Hours at a screen, inside systems that belonged to other people in other countries, doing the patient, unnamed work the state paid him for and never described aloud. At the end of it there was nothing he could hold up and call a day&rsquo;s labor, only a record somewhere of doors that had quietly opened and closed in other people&rsquo;s countries, in other people&rsquo;s lives, without anyone ever feeling him pass through.</p>
+        <p>He was better at it than the men who outranked him knew. That was the part he kept to himself.</p>
+        <p>He rode home in the dark in another taxi, past the checkpoints and the wet stretches of road where the municipal crews had worked. He ate what his mother put in front of him, answered the questions he was allowed to answer, and went to his room.</p>
+        <p>That night, for the first time in weeks, the violence did not come.</p></article></section>
+<section class="chapter" id="ch4"><p class="ch-kicker">CHAPTER 04</p><h2 class="ch-title">Chapter Four</h2><div class="chapter-slug"><div class="slug-row"><span class="slug-key">CH.</span><span class="slug-val">04</span></div><div class="slug-row"><span class="slug-key">LOC.</span><span class="slug-val">Tehran, Iran</span></div><div class="slug-row"><span class="slug-key">TIME</span><span class="slug-val">09:14 IRST</span></div><div class="slug-rule" aria-hidden="true"></div></div><article class="chapter-body"><p class="first-graf"><span class="lift">The Operator slept through the night.</span></p>
+        <p>The buses were running again. The government had restored internet access.</p>
+        <p>He took a seat near the back, where no one could sit behind him, and took out his personal phone. He did this every morning.</p>
+        <p>The bus was the one place he allowed himself the phone at all. Not the apartment, where his mother could read his face, and not the compound, where the trackers at the gate logged every handset.</p>
+        <p>Overnight IRIB state media had broadcast alerts as statements from the Supreme Leader: <em>“Thousands killed by domestic seditionists and international criminals directed by Trump.”</em></p>
+        <p>He deleted them.</p>
+        <p>He then opened an illegal western newsfeed on Reddit.</p>
+        <p>The news he was avoiding was there.</p>
+        <p>The Americans had moved a second carrier group into the Gulf. The Israelis had recalled reserve pilots. The US President issued threats on social media as he always did.</p>
+        <p>Everyone in Tehran understood what that meant.</p>
+        <p>A kilometer out, before the compound’s trackers could find it, he powered the phone down and put it away. By the time the bus reached the gate he was the other version of himself.</p>
+        <p>At the bunker door he held his card to the reader. A green light.</p>
+        <p>He deposited his phone in the secured lockbox. Two were already there. His reality now narrowed to what his military masters allowed and what his colleagues shared.</p>
+        <p>The Operator had graduated top of his class at Sharif two years ago. Computer science. The degree that was supposed to open the world. In another country it would have. In this one the technology companies had left after the sanctions, or had never come. The brightest graduates from the best technical university in Iran funneled into three destinations: government research, the military, or the slow erosion of freelance work paid in rials that bought less every month.</p>
+        <p>Not that anyone had given him much of a choice.</p>
+        <p>The IRGC had resources. The IRGC had problems worth solving. The IRGC had not asked whether he wanted to solve them.</p>
+        <p>The Technician was at his station.</p>
+        <p>Two monitors lit, leaning forward. He arrived early because arriving early was the kind of thing that got noticed. He was younger than the Operator by three years. He had entered the program after the sanctions had fully closed the civilian economy to people with his skills. The IRGC was not his second choice. It was his only one. He had made peace with it.</p>
+        <p>The Operator had not, which gave his enthusiasm a quality the Operator found enviable and faintly exhausting in equal measure.</p>
+        <p>He looked up.</p>
+        <p>“You slept.”</p>
+        <p>“What gave it away.”</p>
+        <p>“You don’t look like you want to die.”</p>
+        <p>The Operator set his backpack down and powered up his workstation.</p>
+        <p>The Technician returned to his screen. The sound of his typing was faster than anyone else’s in the room. Always was. He coded the way some people talked. Fluently, without apparent effort, with a confidence that did not pause to consider whether the next sentence might be wrong.</p>
+        <p>The Infrastructure Lead was at his usual position facing the network status displays. Three screens. Three locations. Tehran, Karaj, Marzdaran.</p>
+        <p>He glanced at the Operator, offered the briefest nod, and returned to his work. In the break room he asked about weekends with brief genuine interest.</p>
+        <p>The Liaison was not at his station. Monitors dark. Chair pushed in.</p>
+        <p>The Operator noticed this without remarking on it.</p>
+        <p>The Liaison’s schedule ran parallel to theirs.</p>
+        <p>Intelligence liaison. A separate analysis room. Meetings that intersected with the Handler’s chain in ways the tactical operators did not fully track. He came and went. Nobody tracked his schedule. Nobody was meant to. He had decided that genuine connection inside this institution was not available and would not be safe if it were.</p>
+        <p>The Handler arrived at 9:14.</p>
+        <p>He came through the corridor with a leather folder under one arm and tea in the other.</p>
+        <p>He greeted no one.</p>
+        <p>Older than the rest of them by two decades.</p>
+        <p>Compact. Careful. A stillness that came from years of observing other people’s reactions rather than producing them. He did not raise his voice. Never needed to. The silence that followed his questions was a tool he had been sharpening since before anyone else in the room had started university.</p>
+        <p>The desk in his office was positioned with a sightline to every workstation through the open door. Always neat. He kept it that way so nobody in the room had anywhere else to look when he was talking.</p>
+        <p>Today he looked altered.</p>
+        <p>He opened the folder. Reviewed something. Closed it. Opened it again.</p>
+        <p>“Daily briefing in ten minutes,” he said without looking up.</p>
+        <p>The Operator noticed the folder opening twice. He filed it.</p>
+        <p>Four chairs at the table near the Handler’s office. The Handler at the head. The Operator and the Technician facing each other.</p>
+        <p>The Liaison arrived two minutes before and took the fourth seat without explanation, setting a thin folder in front of him.</p>
+        <p>The Handler began, and the Operator understood within the first two minutes that this briefing was different.</p>
+        <p>Current campaign status covered in four sentences. Target coverages acknowledged without discussion. The Handler moved through the tactical items as more of a checklist of decisions he had already made in order to get to something more important.</p>
+        <p>Then he set his pen down.</p>
+        <p>“Division 1500 has realigned unit priorities for Q1.”</p>
+        <p>The room was quiet.</p>
+        <p>“The command assessment is that the strategic environment has changed. External military pressure is now the primary planning consideration. Air defense coordination, communications resilience, and continuity-of-command infrastructure are receiving the majority of resource allocation for the foreseeable period.”</p>
+        <p>The Operator translated this in real time.</p>
+        <p>The Americans are coming. Everyone above us is preparing for war. The money and attention that used to flow toward cyber operations are now flowing toward not being destroyed from the air.</p>
+        <p>“Our unit’s Q4 output has been assessed as adequate.”</p>
+        <p>He let the word sit.</p>
+        <p class="interior"><em>Adequate.</em></p>
+        <p>Six weeks ago the word would have landed as minor institutional pressure. Today it meant something closer to expendable. In a military apparatus preparing for American and Israeli strikes, adequate meant the people who decided budgets and personnel and protection were looking at this program and asking whether it was worth keeping when the bombs started falling.</p>
+        <p>“The focus for Q1 requires this unit to demonstrate strategic value that justifies continued resource allocation during a period of competing priorities.”</p>
+        <p>“The timeline for demonstrating that value is not indefinite.”</p>
+        <p>Nobody spoke.</p>
+        <p>The Operator looked at the KPI board.</p>
+        <p>A new category had appeared on the board since January 9.</p>
+        <p>Domestic social media monitoring. Hours logged. Accounts flagged. Nobody had asked what the category meant or why it was there or what had happened in the streets that made the state decide its cyber operators should also be watching its own citizens.</p>
+        <p>The Liaison sat with his folder unopened.</p>
+        <p>Hearing what was said and what was not said and filing both separately.</p>
+        <p>“The ProxyShell approach,” the Handler said, turning to the Operator. “Your assessment.”</p>
+        <p>“Functional. Coverage against the current target bank set is approximately sixty percent. The remaining forty require updated credential databases not available without HUMINT support.” A pause. “There is a risk that the new timeline does not account for that dependency.”</p>
+        <p>The Handler nodded once.</p>
+        <p>“That dependency is noted.”</p>
+        <p>He moved on.</p>
+        <p>The Handler closed his folder.</p>
+        <p>“I will be direct. The Americans and the Israelis are not conducting a military exercise. The command assessment is that strikes on Iranian nuclear and military infrastructure are probable within the coming weeks. This unit’s work will either contribute to the national defense posture and be recognized at the highest levels, or its resources will be redirected to operations that do.”</p>
+        <p>He stood.</p>
+        <p>“Our <em>Amaliat-e Afandi</em> on American banks need to be accelerated and enhanced immediately to deliver more financial resources to Division. See to it.”</p>
+        <p>The briefing was over.</p>
+        <p>The Operator went to the break room and stood at the tea station longer than the act of pouring required.</p>
+        <p>Probable within the coming weeks. He had known. Everyone had known.</p>
+        <p>It meant the people who decided things had decided this was real.</p>
+        <p>The Technician appeared beside him.</p>
+        <p>“The secondary authentication bypass is still throwing errors against the updated target configurations.”</p>
+        <p>The Operator looked at him.</p>
+        <p>The Technician’s face showed no trace of the briefing that had ended four minutes ago.</p>
+        <p>He parsed the world into separate containers. War was one container. Code was another.</p>
+        <p>“If we adjust the timing window for the new Microsoft patch cycle we might achieve sixty percent conversion.”</p>
+        <p>“Sixty is not enough.”</p>
+        <p>“More than what we have.”</p>
+        <p>“What we have is a program that just received a timeline to prove it should exist. Sixty percent of an approach already underperforming is not what that requires.”</p>
+        <p>The Technician considered this. His enthusiasm did not diminish. It recalibrated.</p>
+        <p>“Then we need a different approach.”</p>
+        <p>“Yes.”</p>
+        <p>The Operator poured his tea and said nothing.</p>
+        <p>The Technician waited, received nothing further, and went back to his station moving with a different energy than when he arrived in the break room.</p>
+        <div class="scene-break" role="separator" aria-label="Scene break">· · ·</div>
+        <p>The afternoon passed.</p>
+        <p>The Technician pulled up a legacy <em>Nofouz</em> banking operation API from one of the secondary targets.</p>
+        <p>“This was written by someone who learned to code from a government manual in 1987.”</p>
+        <p>The Operator did not smile.</p>
+        <p>“Give it to me. I will make it sing in this century and for Division.”</p>
+        <p>There was a quiet beat. A shared recognition. Then back to the screen.</p>
+        <p>For a few minutes, the code was the only thing in the room. Young. Skilled. Working on problems that interested them inside a structure neither had chosen and neither could leave.</p>
+        <p>The Infrastructure Lead passed behind them.</p>
+        <p>“Karaj relay running two minutes latency. Configuration update in progress.”</p>
+        <p>Complete. Minimal.</p>
+        <div class="scene-break" role="separator" aria-label="Scene break">· · ·</div>
+        <p>It was afternoon tea time in the break room.</p>
+        <p>A corridor with a window at the far end showing a rectangle of the late afternoon Tehran sky. Gray. Cold pressing against the glass. A counter with a kettle, cups, sugar, a dish of dates someone replenished without being asked.</p>
+        <p>The Operator gazed out the window to avoid looking at the room.</p>
+        <p>Reza was twenty-six. A schoolmate from the eastern districts. A mouth that did not close when closing was the only thing that kept you alive.</p>
+        <p>That was Reza. Loud when it mattered. Quiet when it didn’t. The smartest person in the applied math lab at Sharif and the worst at pretending not to be. He argued with professors who did not want to be argued with. He laughed in rooms that were not built for laughter.</p>
+        <p>Their differences made them friends. Their choices changed them both.</p>
+        <p>The Operator chose the card.</p>
+        <p>Reza had not chosen the card.</p>
+        <p>He went into the freelance world instead. The rials. The VPN contracts. The slow bleed the sanctions made of everyone who tried to build something the state did not own.</p>
+        <p>Reza WhatsApped him a link three weeks ago. Persepolis match highlights. No words. Just the link.</p>
+        <p>The government-imposed internet blackout came that same night.</p>
+        <p>The blackout killed the phones before anything else. Nobody in the eastern districts could call out. Nobody outside could call in. For three days Reza existed only in the memories of people who had seen him last.</p>
+        <p>The link sat in his phone now like an artifact pulled from rubble. Still blue. Untapped.</p>
+        <p>He was at this window. Reza was not.</p>
+        <p>The tea burned through the glass. He shifted his grip.</p>
+        <p>The Liaison entered the room with his thermos cup.</p>
+        <p>“The Americans.”</p>
+        <p>The Liaison walked to the counter and reached behind the kettle as if looking for something.</p>
+        <p>“The command layer will want results that can support retaliation capability. Something they can brief upward as a credible asymmetric response.”</p>
+        <p>The Operator looked at him.</p>
+        <p>It was the most analytical thing the Liaison had said in the open room in weeks. And it was exactly right.</p>
+        <p>“Something significant,” the Liaison said. “That was his word.”</p>
+        <p>“There is always a word.” The Operator nearly smiled.</p>
+        <p>From the main room, the Technician’s keyboard chattered. Fast. Untroubled.</p>
+        <p>The Operator stood at the break room door and looked down the corridor toward the gray sky.</p>
+        <p>Reza was out there. Or was not. He was not going to find out from inside this building.</p>
+        <p>He went back to his station.</p>
+        <div class="scene-break" role="separator" aria-label="Scene break">· · ·</div>
+        <p>The end of the day arrived.</p>
+        <p>The others left one by one. The Liaison had disappeared. The Operator had not noticed when.</p>
+        <p>The Handler remained in his office at his desk.</p>
+        <p>Writing. His pen composing language about his quarterly cyber assessment for people who were thinking about air defense batteries and command bunker survival.</p>
+        <p>He stopped writing to stare at the words.</p>
+        <p>He was writing for an audience that had stopped listening.</p>
+        <p>The Operator stayed at his station. Monitors lit.</p>
+        <p>The legacy bank hacking code was on his screen. His eyes barely blinked as he stared at the screen while his fingers moved across the keyboard. After 30 minutes he saved the new codebase and uploaded it for final testing and deployment. Tomorrow.</p>
+        <p>The Handler looked up and called through the office door.</p>
+        <p>“You are still here.”</p>
+        <p>“Finishing something.”</p>
+        <p>He held the gaze. Then returned to his writing. The Operator returned to his screen.</p>
+        <p>The work was done. They stayed anyway.</p>
+        <p>The printer activated.</p>
+        <p>The sound was ordinary. A page feeding through.</p>
+        <p>The timing was not.</p>
+        <p>The Handler emerged from his office to retrieve the page.</p>
+        <p>Read it. Read it again.</p>
+        <p>He returned to his office. Opened a second drawer. Retrieved a translation log. Cross-referenced. Set the page flat on his desk with both hands on either side of it.</p>
+        <p>A query relayed through a channel he had not thought about in months. From a partnership that ranked nowhere on the priority list.</p>
+        <p>He almost set it aside.</p>
+        <p>“Where is country code 58?” he said.</p>
+        <p>He said it to the room. The room was nearly empty. Only the Operator heard, and the Operator did not know.</p>
+        <p>From the corridor, footsteps.</p>
+        <p>The Liaison appeared in the doorway. Returning for something at his station. A jacket. A folder. Something small enough to have been the reason or the excuse.</p>
+        <p>The Handler looked at him.</p>
+        <p>“Country code 58. Where.”</p>
+        <p>“Venezuela,” the Liaison said.</p>
+        <p>Without hesitation. As if rehearsed.</p>
+        <p>The Handler looked at the page.</p>
+        <p>His superiors were not thinking about Venezuela.</p>
+        <p>His superiors were not thinking about cyber operations at all except as one line item in a defense posture that was rapidly becoming a question of whether the regime would exist by spring. The query from country code 58 was, in the hierarchy of things that mattered to the Islamic Republic of Iran in early February 2026, nothing.</p>
+        <p>He folded the page once. Placed it inside the leather folder. Stood.</p>
+        <p>Put on his coat.</p>
+        <p>Walked past the Operator’s desk without acknowledgment. Past the Liaison in the doorway. Through the corridor toward the steel door.</p>
+        <p>The green light flashed as the door opened.</p>
+        <p>Then went dark.</p>
+        <p>The silence held. The hum of the servers. The smell of food that had been warming the air since morning.</p>
+        <p>The Liaison stood in the doorway a moment longer. Then retrieved what he had come for. Returned his chair to its position. Went to his screen.</p>
+        <p>The Operator watched him.</p>
+        <p>He didn’t need to look it up.</p>
+        <p>The Operator kept this the way he kept everything else he didn’t say out loud.</p>
+        <p>He shut down his workstation and began the journey back to the apartment and the life waiting on the other side.</p>
+        <p>Behind him, in the dark, the code he had finished sat on the server, queued for tomorrow.</p>
+        <hr aria-hidden="true" style="border:0; border-top:1px solid currentColor; opacity:.25; width:40%; margin:2.75rem auto 0;">
+        
+        <p>The Operator arrived at the bunker earlier than normal the next morning.</p>
+        <p>He spent most of it testing and retesting the new code and configuring it against the identified target list.</p>
+        <p>At 16:34 the Handler approved the operation for launch.</p>
+        <p>The room had been running hard all day and would run into the night when the American banks across the ocean closed their business day.</p>
+        <p>Outside the bunker it was full dark, the Tehran winter evening pressing cold against the buried walls. Inside, the air was the same air it always was. Warm electronics. Cooling systems. The saffron-and-turmeric smell of food gone cold in its containers since noon, because no one had stopped to eat it.</p>
+        <p>The Technician ran the center station.</p>
+        <p>He had been at it since the briefing, leaning into his two monitors, and when the work went well he spoke to the screen in a low half-voice that no one was meant to answer.</p>
+        <p>The operation was going well.</p>
+        <p>A session stood open on his right monitor. The website of Cumberland Mutual Savings. A customer signing in to look at his savings account, the way he or she probably did most mornings.</p>
+        <p>It was not the customer.</p>
+        <p>The customer was a retiree in a small American city, eight and a half hours behind them with no idea anyone was inside the account. The man signing in was the Technician, in a buried room outside Tehran, pretending to be him or her. The bank could not tell the two of them apart.</p>
+        <p>The bank saw everything it had ever asked a customer to prove. A trusted laptop. A session already signed in.</p>
+        <p>The Operator had spent eleven weeks building the target list across multiple banks.</p>
+        <p>Sixty out of every hundred. That had been the performance ceiling for a year. The other forty needed credential dumps the Handler kept promising and never delivered.</p>
+        <p class="interior"><em>Adequate.</em></p>
+        <p>Yesterday the Operator stopped waiting for the forty and built a different way in.</p>
+        <p>The new code did not need the password, and it did not need to beat the bank’s second check, because it never met it. It went in through the bank’s own account-recovery path, the one built for customers who had lost everything, and let the bank vouch for him. An account he had never held a password for became an account he owned, in under a minute, with no one handing him anything.</p>
+        <p>Today sixty became ninety-four.</p>
+        <p>And the forty he had been locked out of turned out to be the richest of them. The careful ones. The people who never reused a password were the same people who had the most to guard, which made them the most to take.</p>
+        <p>Fifty-three of them tonight across seven different banks, where a year ago the same rule would have given him barely thirty. He read down the column.</p>
+        <p>The system gave him the names the short way, last name and an initial. <em>Halloran, R.</em> And a number. Three hundred and one thousand, two hundred and fifty-six.</p>
+        <p>He knew that the name was a person, a home somewhere with furniture and pictures. He looked at the word beside it, the one that meant the account was open and the money was theirs to take, and when it turned green he would say, “Next.”</p>
+        <p>“Wire’s away,” the Technician said. “The bank pushed it out itself. As far as Cumberland knows, he asked them to.”</p>
+        <p>From the wall station the Infrastructure Lead spoke without turning. “Exit’s holding. Marzdaran to the first hop, first hop out. Under a second.”</p>
+        <p>He watched a relay he did not trust drop back inside tolerance, and under his breath, to the equipment and to no one, he said, “Khoda ro shokr.”</p>
+        <p>“Next,” the Operator said.</p>
+        <p>The Technician did not open the next account. He pulled something else onto his second monitor instead.</p>
+        <p>“Checking he’s not on-line,” he said. “If he’s mid-session on his end, the app flags it and the wire holds for review.”</p>
+        <p>The Operator looked over at the window that came up on the second screen.</p>
+        <p>A live camera image. Grainy and gray, a wide bowl of a room bent at its edges by the lens, the picture catching up to itself in steps the way the cheap ones did. A kitchen behind, a light on over the sink.</p>
+        <p>A man sat at a desk in the middle of the room in a wheelchair. A bulky old PC box and monitor on the desk.</p>
+        <p>Behind him a shelf held things the operators took in as shapes and let go. A helmet. A photograph of men in heavy coats standing in a row. The man was broad through the shoulders and gone gray, and his legs did not move when his hands did.</p>
+        <p>He was looking at the screen the camera could not see.</p>
+        <p>Then he stopped looking at it.</p>
+        <p>He put his hands to the wheels and rolled the chair back. He opened the bottom drawer of the desk and took out a revolver. He held it in his lap a moment. Then he put the barrel under his chin with both hands and fired.</p>
+        <p>The feed had no sound. The camera’s picture shuddered and caught up to itself half a second late. The chair had rolled back into the middle of the room. The man in it had slid down and to one side. His hands fell open. The revolver hit the floor.</p>
+        <p>On the shelf behind him the helmet and the photograph of men in heavy coats stayed exactly where they were.</p>
+        <p>He did not move again.</p>
+        <p>The feed ran on. Gray. Silent. The light still on over the sink.</p>
+        <p>The Technician watched a second longer.</p>
+        <p>“Close it,” the Operator said.</p>
+        <p>The Technician closed it.</p>
+        <p>On the other monitor the wire had cleared while they watched. The money was gone and the man was in the chair, and the two facts sat a hand’s width apart.</p>
+        <p>In the bunker the field went green and a tone sounded and the next session opened. By the time the Technician sat back, the cohort was finished.</p>
+        <p>“Fifty-one for fifty-three,” he said. He rolled his neck. He reached for the tea that had gone cold an hour ago and drank it. There was nothing on his face but the clean pleasure of a hard job done right. “Nine million one. A little over.”</p>
+        <p>“Stage it out,” the Operator said.</p>
+        <p>The Infrastructure Lead was already doing it, walking the money through a sequence of hops and conversions, each one defensible somewhere, the whole of it folding into a shape a forensic accountant could pick at for a year without ever laying it flat.</p>
+        <p>The Liaison came through from the analysis room while the money was moving. He did not look at the screens. He crossed to the far door with a folder under his arm and he was gone before the Operator had finished noticing him. No one asked where he’d been. No one ever did.</p>
+        <p>The Operator watched the money go and felt what he was allowed to feel, which was that the work was good. He knew how good. He had spent eleven weeks on an institution that believed it was safe, and it had never once seen him, and the money was now leaving on rails he had laid by hand.</p>
+        <p>The Handler came down from his desk at 18:40.</p>
+        <p>He did not ask for the report. He stood behind the Technician and read the screens himself, slowly, and the men at their desks arranged themselves around his stillness.</p>
+        <p>“Fifty-one,” he said.</p>
+        <p>“Nine point one, staged and moving. No flags on their side yet. It’ll be a while before they understand what they’re looking at.”</p>
+        <p>The Handler set a hand on the back of the Technician’s chair. He looked at the green fields and the cleared list with a pleasure that was not staged.</p>
+        <p>“Âfarin,” he said.</p>
+        <p>The Technician lifted his head and smiled.</p>
+        <p>The Handler let him have the moment, and then took it back.</p>
+        <p>“It’s clean. It’s elegant. It will brief well.”</p>
+        <p>He straightened, and the warmth went back behind the careful face and turned into something with a ledger in it. “And in the morning there are fifty-one people on telephones, and an institution opening a file. We spent infrastructure to take nine million dollars from people who keep their savings in one account. We can do it twice more, perhaps, before they learn our approach.”</p>
+        <p>He turned for the steps to his desk.</p>
+        <p>“Show the command something they have not seen before, and they will not strip this room for parts when the strikes come.” He said it without looking at the Operator. “This is proof you can cut the key. It is not the lock they are dreaming about.”</p>
+        <p>He went into his office and sat with the door open and began again to write his assessment for men whose attention was on carrier groups and command bunkers.</p>
+        <p>The Technician sat a moment and stared at nothing. After a minute he began to write up the operation for the brief. He had already reset around the larger problem, wondering what the lock looked like.</p>
+        <p>The Operator powered down his station.</p>
+        <p>He pulled his coat off the back of the chair and fit the uneaten lunch his mother had packed for him into his backpack.</p>
+        <p>The indicator light at the steel door shifted from green to red as he walked out into the cold of a city that was waiting for a war, carrying his mother’s bread and nine million dollars he would never touch and a number, three hundred and one thousand, two hundred and fifty-six, that he had already stopped seeing.</p>
+        <hr aria-hidden="true" style="border:0; border-top:1px solid currentColor; opacity:.25; width:40%; margin:2.75rem auto 0;">
+        <h2 class="chapter-subhead" style="font-family:'JetBrains Mono', monospace; font-size:.85rem; letter-spacing:.18em; text-transform:uppercase; opacity:.65; text-align:center; margin:2.5rem 0 1.5rem;">Johnstown, PA · 10:09 EST</h2>
+        <p>The call came in at 10:09 that morning.</p>
+        <p>A welfare check. East Side, Johnstown.</p>
+        <p>A woman two doors down had heard it through the brick and the February cold and called it in.</p>
+        <p>Engine 4 was nine blocks out.</p>
+        <p>The men on it had worked for Captain Ray Halloran. Fifteen years. Before the Iron Street roof. Before the chair.</p>
+        <p>They came up the porch steps fast.</p>
+        <p>Then they stopped.</p>
+        <p>They knew the room. The scanner on the sill. The coffee he made too strong. The shelf. The company photo. The commendation from Iron Street, framed. Two kids off a third floor. His legs were the price.</p>
+        <p>The camera on top of the TV. The desk where he paid the bills to the dollar. The PC with the Green Bay Packers mousepad.</p>
+        <p>They had carried strangers down ladders out of black smoke. There was nothing here for their hands to do.</p>
+        <p>One of them took off his helmet.</p>
+        <p>The screen showed the account entries for Ray Halloran: <em>Opening balance: $301,256.33 Withdrawals: $301,256.33 Closing balance: $0.00</em></p>
+        <p>The pension. The Iron Street settlement. The careful rest of it. Gone by wire transfer that morning. Minutes before the call.</p>
+        <p>The bank’s record on the screen showed Ray Halloran sent it himself. Signed in as himself. Confirmed from his own phone.</p>
+        <p>The fire report would say one thing.</p>
+        <p>The medical examiner would say another.</p>
+        <p>The bank would say a third.</p>
+        <p>Each without mentioning the man who spent thirty years running into what everyone else ran from.</p>
+        <p>Each in the only language it had for <em>He did it to himself</em>.</p>
+        <div class="scene-break" role="separator" aria-label="Scene break">· · ·</div></article></section>
+<section class="chapter" id="ch5"><p class="ch-kicker">CHAPTER 05</p><h2 class="ch-title">Chapter Five</h2><div class="chapter-slug"><div class="slug-row"><span class="slug-key">CH.</span><span class="slug-val">05</span></div><div class="slug-row"><span class="slug-key">LOC.</span><span class="slug-val">Fort Meade, Maryland</span></div><div class="slug-row"><span class="slug-key">TIME</span><span class="slug-val">05:10 EST</span></div><div class="slug-rule" aria-hidden="true"></div></div><article class="chapter-body"><p class="first-graf"><span class="lift">The sky over Fort Meade,</span> Maryland at 0510 was February mid-Atlantic dark with no opinion about itself.</p>
+        <p>He had been running the same four-mile loop around the perimeter of the base since October, which in Maryland meant he had run it in rain, in sleet, in damp predawn cold, and in the flat gray dark of mornings that had not decided whether to become days.</p>
+        <p>Across the base, the buildings sat under their lamps in low hard shapes, institutional and without apology, exactly as the government had built them. Functional. Forgettable. Durable enough to outlast the people working inside them.</p>
+        <p>He had spent most of his adult life in buildings like that.</p>
+        <p>There was a version of him that still found the austerity honest.</p>
+        <p>Another version, surfacing more often lately, found it depressing.</p>
+        <p>He was fifty-eight. A commander.</p>
+        <p>The left knee filed the same report every morning at around mile three, which was: <em>I suggest you moderate your ambitions.</em></p>
+        <p>He had been receiving that report from his Navy physician since the Gulf and had arrived at the same response every time.</p>
+        <p class="interior"><em>Noted. We are continuing.</em></p>
+        <p>By the time he slowed to a walk at the northeast corner of the staff lot, his sweatshirt was dark with sweat and his breath came out in small even clouds. He stood with his hands on his hips for a moment, looking at nothing in particular.</p>
+        <p>His Tahoe sat where he always left it, gray, used, practical, maintained without sentiment. He kept a travel mug in the console that he filled before leaving the house each morning, which meant the coffee was reliably cold by the time the run ended.</p>
+        <p>The house was rented. Furnished when he took it. He had added a coffee maker, a dog bed, and nothing else.</p>
+        <p>He had once planned to add more.</p>
+        <p>The planning had remained planning.</p>
+        <p>His son had promised to visit. He called and left a message asking to talk. Said it was important. By the time he called his son back it was too late.</p>
+        <p>The dog was a seven-year-old shepherd mix from a rescue in Virginia. He had gotten it the first winter in Maryland, when it became clear that evenings alone in the house were no longer a temporary condition but the structure of things. It required nothing from him beyond the basics, which was the only kind of relationship he was currently managing well.</p>
+        <p>He caught his own face in the rearview mirror as he backed out of the space. A tired man in running clothes in a government parking lot before sunrise.</p>
+        <p>He drank the cold coffee. Watched a transport vehicle roll through an inner checkpoint. Then he got out, shouldered the dry bag, and walked toward the entrance.</p>
+        <p>The face scanner at the main door had gone in eighteen months earlier as part of a modernization package the building manager had sent three rounds of memos about. He understood that systems worked when they worked and that expressing frustration with machinery was usually a character flaw.</p>
+        <p>The light went green.</p>
+        <p>He pressed through.</p>
+        <p>Inside, the building smelled 20th century industrial. Conditioned air. Toner. Burned coffee from somewhere down the hall. The faint sweet chemical ghost of carpet that had last been replaced under a previous administration.</p>
+        <p>He had been in this particular building seven months. He would likely remain another five or six, maybe a little longer if the bureaucracy lost track of him. He had not been sentimental about postings since early enough in his career to still believe assignments were given for reasons that honored what a person was good at. That belief had died around year twelve.</p>
+        <p>He had kept doing the work anyway.</p>
+        <p>In the operations suite, he poured from the communal carafe into a mug that said US FLEET CYBER COMMAND in letters faded to a suggestion and picked up the copy of the <em>Times</em> his aide had left near the counter. Then he carried both into his office.</p>
+        <p>The desk was as it always was in the morning.</p>
+        <p>Left side. Overnight material, sorted by his aide. Center. Whatever he was actually working through. Right side. The items requiring more time than the day had shown any intention of giving him.</p>
+        <p>The right side stack was now the largest it had been since October.</p>
+        <p>At the top of the left side stack sat Venezuela.</p>
+        <p>It had sat at the top of every left stack since the fourth of January, the morning after Operation Absolute Resolve had finished doing what it did to Caracas and the phone had gone from an instrument he used to one that used him. Special operations in the capital. Strikes on military targets. Maduro and his wife extracted. Instant cable television and social media mythology.</p>
+        <p>He did not care about Maduro.</p>
+        <p>He cared very much about what removing a sitting head of state by military force did to the ambient noise level of every intelligence and cyber operation touching the hemisphere.</p>
+        <p>It broke containment.</p>
+        <p>Every ally had a position. Every adversary was recalibrating. Every interagency channel that touched SOUTHCOM had turned into a firehose of assessment, reassurance, posture, caveat, and political guidance that had to be read, filtered, answered, and managed upward before anybody could get back to the actual work.</p>
+        <p>It was now a cluster.</p>
+        <p>He set the Venezuela stack aside without opening it. He would need it later. At 1430 there was a deputies-level meeting in the main conference suite convened by the office of the undersecretary and nominally devoted to allied posture and intelligence requirements in the aftermath.</p>
+        <p>Nominally.</p>
+        <p>He had spent too many years in government not to understand the difference between a meeting’s stated purpose and its real one.</p>
+        <p>The man who had convened it was a man who thought in narratives, not facts, and saw every crisis as a frame to be controlled rather than a reality to be assessed. He sat above him in the chain.</p>
+        <p>He was also a dickhead.</p>
+        <p>Not a fool. Fools were easier. Fools at least broadcast their limits. He did not lie exactly. He selected. He curated. He rotated intelligence until it caught the light that favored whatever case he wanted to make.</p>
+        <p>He had spent thirty years dealing with men like that.</p>
+        <p>He had never gotten used to them.</p>
+        <p>He opened the overnight summaries.</p>
+        <p>The first seven pages were Venezuela. Regional reactions. Russian foreign ministry language. OAS maneuvering. Bogota liaison traffic. Follow-on risk assessments wrapped in the usual layers of caution and ambition. He read the way he always read. Fully present. Trusting that useful things surfaced if given the attention they deserved.</p>
+        <p>By page nine of the SIGINT digest there was a single line on Tehran.</p>
+        <p class="interior"><em>Overnight demonstrations in central districts. Dispersal operations ongoing. State media attributing unrest to foreign agitation.</em></p>
+        <p>He had seen some version of that sentence for weeks. The government issued the same lie. The streets issued the same refusal.</p>
+        <p>Same shit. Different day.</p>
+        <p>Then he kept going.</p>
+        <p>The last item in the left stack came from a financial-sector sharing consortium, one of those public-private clearinghouses that lived in the vague administrative zone between compliance, cybersecurity, and analysis no one in Washington ever respected until it was too late. He read it the way he read all low-yield material. Attentively enough to catch anything odd. Lightly enough not to manufacture significance where none existed.</p>
+        <p>On page two, halfway down:</p>
+        <p class="interior"><em>Overnight authentication anomalies reported across a single New York-area financial platform. Isolated. Resolved prior to market open. Likely maintenance window or infrastructure fault. No customer impact reported beyond brief service interruption.</em></p>
+        <p>He read it again.</p>
+        <p>At the bottom, the distribution line: Treasury, FinCEN, the Bureau’s cyber division, CISA. Copied to all of them. Which made it everyone’s, and which made it no one’s, until it grew a name and a body count. He had watched that arithmetic before. Always the same way. Always too late.</p>
+        <p>Then turned the page.</p>
+        <p>Nothing else.</p>
+        <p>He closed the summary and placed it on the right stack.</p>
+        <p>It did not demand action. Because in a period this loud he was not ready to throw anything away.</p>
+        <p>He sat for a moment with both hands on the desk.</p>
+        <p>Then he unfolded the <em>Times</em>.</p>
+        <p>Venezuela above the fold. Venezuela below it. A photograph of Maduro in the back of a vehicle, tinted glass, two federal marshals visible through the angle of the shot. The country’s attention exactly where the room in Washington wanted it.</p>
+        <p>Nothing about New York.</p>
+        <p>Nothing about financial platforms. Nothing about authentication failures.</p>
+        <p>He folded the paper and set it aside.</p>
+        <p>By 0640 the building had begun its day around him.</p>
+        <p>He kept his office door open because he had long ago learned that the temperature of a command came through in its ambient sounds more honestly than in its scheduled briefings.</p>
+        <p>Loud about Caracas. Silent about the summary sitting on his right stack.</p>
+        <p>His team would begin arriving soon. Different dynamics. More noise. Human pattern recognition.</p>
+        <p>At 0708 his aide knocked once and came in anyway, silently carrying the first physical cable traffic of the day and a legal pad with three items flagged at the top.</p>
+        <p>He looked at the aide over the rim of the mug with his right eye.</p>
+        <p>The younger man caught the look and shifted half a degree without making eye contact. Respect, not fear. He was smart enough not to confuse the two. He waited.</p>
+        <p>The aide nodded once and left.</p>
+        <p>He looked through the open door for a second after the young man was gone.</p>
+        <p>That was another thing about them. They were astonishingly quick with patterns and maddeningly dismissive of outliers before anybody older in the room had decided what they meant. Brilliant, loyal in their own way, socially unfinished. Raised inside feeds, dashboards, and institutional mistrust. Better at synthesis than patience.</p>
+        <p>He set the cables on the desk and pulled the Venezuela after-action back to center. The 1430 meeting was still the immediate problem. What would be said in that room. What should be said.</p>
+        <p>He picked up a pen from the cup on the corner and began writing in the margin in the compact private shorthand he had used for years, the kind no one else could read and no one else needed to.</p>
+        <p>He wrote for another minute, then stopped and glanced toward the right stack.</p>
+        <p>The financial-platform summary sat on top, thin and unimpressive and easy to explain away. The building generated items like this a hundred times a week and dismissed ninety-nine of them correctly.</p>
+        <p>He knew that.</p>
+        <p>He also knew that the threat that killed you was rarely the one everybody had been rehearsing for all week.</p>
+        <p>He capped the pen. Reached for the summary again. Read the line one more time.</p>
+        <p class="interior"><em>No customer impact reported beyond brief service interruption.</em></p>
+        <p>Maybe true.</p>
+        <p>Maybe not.</p>
+        <p>He set it back down and looked through the open office door at the hallway beyond.</p>
+        <p>The building was pointed outward. Toward Caracas. Toward Tehran. Toward maps, actors, signatures, retaliation ladders, searching for a menace defined in some other building.</p>
+        <p>Outside the perimeter the country was waking up.</p>
+        <p>Inside the perimeter they were watching the frontier.</p>
+        <p>And somewhere in the space in-between, a pile of paper was starting to grow.</p>
+        <div class="scene-break" role="separator" aria-label="Scene break">· · ·</div></article></section>
+        <div class="endcap">
+          <p class="k">End of the free sample</p>
+          <h4>That is the opening.</h4>
+          <p>The full novel comes as a free advance copy. Join the list and be first to get it.</p>
+          <div class="btns">
+            <button class="btn primary" id="readerSignup" type="button">Join the list</button>
+            <button class="btn" id="readerBack" type="button">Back to the site</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="ln"><span class="led" aria-hidden="true"></span><span>SYS::ARC.READER</span><span style="flex:1"></span><span>v0.1</span></div>
+    <div class="ln"><span>UPLINK</span><span class="dots" aria-hidden="true">·······································································</span><span class="ok">OK</span></div>
+    <div class="end"><span>© 2026 BMAC</span><a href="#signup">Privacy note</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // mobile menu
+  var mb=document.getElementById('menuBtn'), mm=document.getElementById('mobileMenu');
+  function closeM(){mm.classList.remove('open');mb.setAttribute('aria-expanded','false');}
+  mb.addEventListener('click',function(e){e.stopPropagation();var o=mm.classList.toggle('open');mb.setAttribute('aria-expanded',o?'true':'false');});
+  document.addEventListener('click',function(e){if(!mm.contains(e.target)&&!mb.contains(e.target))closeM();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeM();});
+  mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeM);});
+
+  // sign-up form
+  (function(){var form=document.getElementById('joinForm'),done=document.getElementById('joinDone');
+    form.addEventListener('submit',function(e){e.preventDefault();if(!form.checkValidity()){form.reportValidity();return;}form.hidden=true;done.hidden=false;});})();
+
+  // hero typing: title, subtitle, byline on a terminal cursor; cursor rests at end of the title.
+  var lines=[document.getElementById('hTitle'),document.getElementById('hSub'),document.getElementById('hBy')];
+  var cursor=document.createElement('span'); cursor.className='cursor'; cursor.setAttribute('aria-hidden','true');
+  if(!reduce){
+    lines.forEach(function(el){el.textContent='';});
+    var li=0;
+    function typeLine(){
+      if(li>=lines.length){lines[0].appendChild(cursor);return;}
+      var el=lines[li], full=el.getAttribute('data-text'), i=0;
+      el.appendChild(cursor);
+      (function step(){
+        if(i<full.length){ cursor.insertAdjacentText('beforebegin', full.charAt(i)); i++; setTimeout(step, 34); }
+        else { li++; setTimeout(typeLine, 260); }
+      })();
+    }
+    typeLine();
+  } else {
+    lines[0].appendChild(cursor);
+  }
+})();
+</script>
+
+<script>
+(function(){
+  var openBtn=document.getElementById('openReader'),reader=document.getElementById('reader'),
+      closeBtn=document.getElementById('closeReader'),scroll=document.getElementById('rscroll'),rtoc=document.getElementById('rtoc');
+  if(!openBtn||!reader)return;
+  function open(){reader.hidden=false;document.body.style.overflow='hidden';if(scroll)scroll.scrollTop=0;closeBtn.focus();}
+  function close(){reader.hidden=true;document.body.style.overflow='';openBtn.focus();}
+  openBtn.addEventListener('click',open);
+  closeBtn.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!reader.hidden)close();});
+  reader.querySelectorAll('.rtoc a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(e){e.preventDefault();var t=reader.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({block:'start'});if(rtoc)rtoc.removeAttribute('open');});
+  });
+  var su=document.getElementById('readerSignup');
+  if(su)su.addEventListener('click',function(){close();var s=document.getElementById('signup');if(s)s.scrollIntoView({behavior:'smooth'});});
+  var bk=document.getElementById('readerBack');
+  if(bk)bk.addEventListener('click',close);
+}());
+</script>
+
+</body></html>
