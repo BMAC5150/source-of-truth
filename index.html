@@ -362,13 +362,28 @@ section{position:relative;padding-block:clamp(52px,12vw,116px)}
         <div class="sec-head" style="margin-bottom:24px"><p class="eyebrow"><span class="led" aria-hidden="true"></span>SIGN-UP</p><h2>Join the list</h2></div>
         <div class="panel">
           <p class="desc">News about <em>Source of Truth</em> and the next book. About one email a month. Unsubscribe anytime.</p>
-          <form id="joinForm" novalidate>
-            <div class="field"><label for="jEmail">Email</label><input type="email" id="jEmail" name="email" required placeholder="you@domain.com" autocomplete="email"></div>
-            <div class="field"><label for="jName">First name <span class="opt">(optional)</span></label><input type="text" id="jName" name="name" placeholder="—" autocomplete="given-name"></div>
-            <label class="consent" for="jConsent"><input type="checkbox" id="jConsent" name="consent"><span>Email me news about <em>Source of Truth</em> and the next book. About one email a month. Unsubscribe anytime.</span></label>
+          <div class="confirm" id="joinSoon"><span class="led" aria-hidden="true"></span><div><h4>SIGN-UP OPENS SOON</h4><p>The list isn&rsquo;t live yet. Check back shortly to join and claim your free advance copy.</p></div></div>
+
+          <!-- ============================================================================
+               REAL SIGN-UP FORM — activate when your Kit (kit.com) form is ready.
+               1. In Kit: create a form, open it, choose Embed -> HTML.
+               2. From that HTML, copy YOUR form's action URL and confirm the field
+                  names match the two inputs below (Kit uses email_address and
+                  fields[first_name]; if yours differ, update the name="" values).
+               3. Replace FORM_ID in the action URL below with your form's URL.
+               4. Delete the "joinSoon" div above, then remove this comment wrapper
+                  (the opening comment-start line and the closing comment-end line)
+                  so the form shows.
+               No JavaScript needed: the browser posts straight to Kit, which sends the
+               double opt-in confirmation email. (Free plan has no sequences, so send
+               the advance copy to confirmed subscribers as a manual broadcast.)
+          <form id="joinForm" action="https://app.kit.com/forms/FORM_ID/subscriptions" method="post">
+            <div class="field"><label for="jEmail">Email</label><input type="email" id="jEmail" name="email_address" required placeholder="you@domain.com" autocomplete="email"></div>
+            <div class="field"><label for="jName">First name <span class="opt">(optional)</span></label><input type="text" id="jName" name="fields[first_name]" placeholder="&mdash;" autocomplete="given-name"></div>
+            <label class="consent" for="jConsent"><input type="checkbox" id="jConsent" name="consent" required><span>Email me news about <em>Source of Truth</em> and the next book. About one email a month. Unsubscribe anytime.</span></label>
             <button type="submit" class="submit">Confirm</button>
           </form>
-          <div class="confirm" id="joinDone" hidden><span class="led" aria-hidden="true"></span><div><h4>IDENTITY CONFIRMED</h4><p>Check your inbox and open the confirmation email to finish joining. Double opt-in keeps the list clean.</p></div></div>
+          ============================================================================ -->
         </div>
       </div>
     </div>
@@ -1269,9 +1284,8 @@ section{position:relative;padding-block:clamp(52px,12vw,116px)}
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeM();});
   mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeM);});
 
-  // sign-up form
-  (function(){var form=document.getElementById('joinForm'),done=document.getElementById('joinDone');
-    form.addEventListener('submit',function(e){e.preventDefault();if(!form.checkValidity()){form.reportValidity();return;}form.hidden=true;done.hidden=false;});})();
+  // sign-up form: when the real Kit form is activated (see SIGN-UP section) the
+  // browser posts straight to Kit. No fake success handler.
 
   // hero typing: title, subtitle, byline on a terminal cursor; cursor rests at end of the title.
   var lines=[document.getElementById('hTitle'),document.getElementById('hSub'),document.getElementById('hBy')];
