@@ -362,28 +362,16 @@ section{position:relative;padding-block:clamp(52px,12vw,116px)}
         <div class="sec-head" style="margin-bottom:24px"><p class="eyebrow"><span class="led" aria-hidden="true"></span>SIGN-UP</p><h2>Join the list</h2></div>
         <div class="panel">
           <p class="desc">News about <em>Source of Truth</em> and the next book. About one email a month. Unsubscribe anytime.</p>
-          <div class="confirm" id="joinSoon"><span class="led" aria-hidden="true"></span><div><h4>SIGN-UP OPENS SOON</h4><p>The list isn&rsquo;t live yet. Check back shortly to join and claim your free advance copy.</p></div></div>
-
-          <!-- ============================================================================
-               REAL SIGN-UP FORM — activate when your Kit (kit.com) form is ready.
-               1. In Kit: create a form, open it, choose Embed -> HTML.
-               2. From that HTML, copy YOUR form's action URL and confirm the field
-                  names match the two inputs below (Kit uses email_address and
-                  fields[first_name]; if yours differ, update the name="" values).
-               3. Replace FORM_ID in the action URL below with your form's URL.
-               4. Delete the "joinSoon" div above, then remove this comment wrapper
-                  (the opening comment-start line and the closing comment-end line)
-                  so the form shows.
-               No JavaScript needed: the browser posts straight to Kit, which sends the
-               double opt-in confirmation email. (Free plan has no sequences, so send
-               the advance copy to confirmed subscribers as a manual broadcast.)
-          <form id="joinForm" action="https://app.kit.com/forms/FORM_ID/subscriptions" method="post">
-            <div class="field"><label for="jEmail">Email</label><input type="email" id="jEmail" name="email_address" required placeholder="you@domain.com" autocomplete="email"></div>
-            <div class="field"><label for="jName">First name <span class="opt">(optional)</span></label><input type="text" id="jName" name="fields[first_name]" placeholder="&mdash;" autocomplete="given-name"></div>
-            <label class="consent" for="jConsent"><input type="checkbox" id="jConsent" name="consent" required><span>Email me news about <em>Source of Truth</em> and the next book. About one email a month. Unsubscribe anytime.</span></label>
+          <form id="joinForm" action="https://formspree.io/f/mzerbdaw" method="POST" novalidate>
+            <div class="field"><label for="jEmail">Email</label><input type="email" id="jEmail" name="email" required placeholder="you@domain.com" autocomplete="email"></div>
+            <div class="field"><label for="jName">First name <span class="opt">(optional)</span></label><input type="text" id="jName" name="name" placeholder="&mdash;" autocomplete="given-name"></div>
+            <label class="consent" for="jConsent"><input type="checkbox" id="jConsent" name="consent" value="yes" required><span>Email me news about <em>Source of Truth</em> and the next book. About one email a month. Unsubscribe anytime.</span></label>
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:0;height:0;opacity:0">
+            <input type="hidden" name="_subject" value="New Source of Truth sign-up">
             <button type="submit" class="submit">Confirm</button>
           </form>
-          ============================================================================ -->
+          <div class="confirm" id="joinDone" hidden><span class="led" aria-hidden="true"></span><div><h4>IDENTITY CONFIRMED</h4><p>You&rsquo;re on the list. I&rsquo;ll email you when the advance copy is ready.</p></div></div>
+          <p class="joinErr" id="joinErr" role="alert" hidden style="margin-top:14px;font-size:14px;color:#ff6b6b">Couldn&rsquo;t submit just now. Please try again in a moment.</p>
         </div>
       </div>
     </div>
@@ -1284,8 +1272,24 @@ section{position:relative;padding-block:clamp(52px,12vw,116px)}
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeM();});
   mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeM);});
 
-  // sign-up form: when the real Kit form is activated (see SIGN-UP section) the
-  // browser posts straight to Kit. No fake success handler.
+  // sign-up form: Formspree AJAX - stays on page, shows the in-aesthetic confirmation
+  (function(){
+    var form=document.getElementById('joinForm'); if(!form) return;
+    var done=document.getElementById('joinDone'), err=document.getElementById('joinErr');
+    var btn=form.querySelector('button[type=submit]');
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      if(!form.checkValidity()){form.reportValidity();return;}
+      if(err) err.hidden=true;
+      if(btn){btn.disabled=true;btn.textContent='Sending\u2026';}
+      fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
+        .then(function(r){
+          if(r.ok){form.hidden=true; if(done) done.hidden=false;}
+          else{if(btn){btn.disabled=false;btn.textContent='Confirm';} if(err) err.hidden=false;}
+        })
+        .catch(function(){if(btn){btn.disabled=false;btn.textContent='Confirm';} if(err) err.hidden=false;});
+    });
+  })();
 
   // hero typing: title, subtitle, byline on a terminal cursor; cursor rests at end of the title.
   var lines=[document.getElementById('hTitle'),document.getElementById('hSub'),document.getElementById('hBy')];
