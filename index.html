@@ -112,7 +112,7 @@ section{position:relative;padding-block:clamp(52px,12vw,116px)}
 /* ---------- synopsis ---------- */
 .prose{max-width:680px}
 .prose .eyebrow{margin-bottom:14px}
-.prose p{font-family:var(--f-serif);font-size:clamp(17px,4.4vw,20px);line-height:1.72;margin:0 0 1.35em;color:var(--ink)}
+.prose p:not(.eyebrow){font-family:var(--f-serif);font-size:clamp(17px,4.4vw,20px);line-height:1.72;margin:0 0 1.35em;color:var(--ink)}
 .prose p:last-of-type{margin-bottom:0}
 .prose .lead:first-letter{initial-letter:2.3;font-weight:600;margin-right:.08em}
 .comps{margin-top:36px;padding-top:22px;border-top:1px solid var(--hair);font-family:var(--f-mono);font-size:12px;letter-spacing:.5px;color:var(--ink-mute);line-height:1.9}
@@ -120,7 +120,7 @@ section{position:relative;padding-block:clamp(52px,12vw,116px)}
 
 /* ---------- characters ---------- */
 .sec-head{max-width:660px;margin-bottom:30px}
-.sec-head p{font-family:var(--f-serif);font-size:16px;line-height:1.6;color:var(--ink-mute);margin:14px 0 0}
+.sec-head p:not(.eyebrow){font-family:var(--f-serif);font-size:16px;line-height:1.6;color:var(--ink-mute);margin:14px 0 0}
 .d-grid{display:grid;grid-template-columns:1fr;gap:14px}
 .rec{background:var(--paper-card);border:1px solid var(--hair);display:flex;flex-direction:column;transition:border-color .2s}
 .rec:hover{border-color:var(--hair-strong)}
@@ -146,7 +146,8 @@ section{position:relative;padding-block:clamp(52px,12vw,116px)}
 
 /* ---------- read (READ FREE box retained) ---------- */
 .read-grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:center}
-.read-copy p{font-family:var(--f-serif);font-size:17.5px;line-height:1.6;color:var(--ink-mute);margin:14px 0 26px;max-width:46ch}
+.read-copy{max-width:640px}
+.read-copy p:not(.eyebrow){font-family:var(--f-serif);font-size:17.5px;line-height:1.6;color:var(--ink-mute);margin:14px 0 26px;max-width:46ch}
 .read-copy .free{color:var(--green)}
 .manifest{background:var(--paper-card);border:1px solid var(--hair)}
 .manifest .mh{padding:12px 16px;border-bottom:1px solid var(--hair);font-family:var(--f-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim);display:flex;justify-content:space-between}
@@ -302,13 +303,15 @@ section{position:relative;padding-block:clamp(52px,12vw,116px)}
 
   <!-- SYNOPSIS -->
   <section class="synopsis" id="synopsis">
-    <div class="wrap prose">
+    <div class="wrap">
+      <div class="prose">
       <p class="eyebrow"><span class="led" aria-hidden="true"></span>SYNOPSIS</p>
       <h2>Four factions, one software application with the power to eliminate digital identities.</h2>
       <p class="lead" style="margin-top:26px">On a cold February morning in New York, a woman’s bank card is declined at a coffee counter. Then at an ATM. The same happens to sixty-seven thousand more New Yorkers. By nine the systems have quietly corrected themselves and the city forgets. Thirty blocks south, in a fintech start-up above a Chinatown dumpling shop, four engineers learn that the overnight glitch was theirs, and that the tool they built to tell banks who a person is can also tell every connected system that a person was never there at all.</p>
       <p>Sovren cleans up duplicate customer records and creates one authoritative profile of a person that is trusted by thirty-one community banks and hundreds of connected businesses across six states. Turned the other way, it can erase people from their own financial lives leaving no fingerprints behind. In a buried bunker outside Tehran, a cyber cell under pressure to prove it is still worth keeping as war approaches has already accessed the code. In a Manhattan tower, an analyst notices an anomaly in Sovren's funding deal and is manipulated into silent compliance to keep her job. At Fort Meade, intel on a series of random cyber attacks nobody cares about grows into a pile on a Navy commander’s desk.</p>
       <p><em>Source of Truth</em> is a geopolitical techno-thriller about competent people inside failing institutions, making rational decisions that add up to a catastrophe none of them can see coming. There are no explosions or plagues. There is a hacked system and a looming digital apocalypse that a group of disparate people must race to prevent.</p>
       <p class="comps">FOR READERS OF &nbsp;·&nbsp; Robert Harris, <b>The Fear Index</b> &nbsp;·&nbsp; Daniel Suarez, <b>Daemon</b> &nbsp;·&nbsp; the institutional dread of <b>Mr. Robot</b></p>
+      </div>
     </div>
   </section>
 
@@ -347,11 +350,13 @@ section{position:relative;padding-block:clamp(52px,12vw,116px)}
 
   <!-- READ -->
   <section class="read" id="read">
-    <div class="wrap read-copy" style="max-width:640px;margin-inline:auto">
-      <p class="eyebrow"><span class="led" aria-hidden="true"></span>THE OPENING</p>
-      <h2>Read the first five chapters for free</h2>
-      <p>It begins with bank outages in New York and moves to cyber attacks from an Iranian hacker bunker to a Cyber Command unit in Fort Meade.</p>
-      <button class="btn primary" id="openReader" type="button"><span class="br" aria-hidden="true">[</span>Start reading<span class="br" aria-hidden="true">]</span></button>
+    <div class="wrap">
+      <div class="read-copy">
+        <p class="eyebrow"><span class="led" aria-hidden="true"></span>THE OPENING</p>
+        <h2>Read the first five chapters for free</h2>
+        <p>It begins with bank outages in New York and moves to cyber attacks from an Iranian hacker bunker to a Cyber Command unit in Fort Meade.</p>
+        <button class="btn primary" id="openReader" type="button"><span class="br" aria-hidden="true">[</span>Start reading<span class="br" aria-hidden="true">]</span></button>
+      </div>
     </div>
   </section>
 
