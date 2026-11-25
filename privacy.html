@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Privacy note — Source of Truth</title>
+<meta name="description" content="What the Source of Truth advance-reader site collects, why, and how to opt out.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#0D0F0E; --paper-alt:#111413; --paper-card:#161A18;
+  --ink:#DCD7CA; --ink-mute:#A7A294; --ink-dim:#736F66;
+  --hair:rgba(217,212,199,.13); --hair-strong:rgba(217,212,199,.24);
+  --green:#4BE36B; --green-dim:#2F8A47;
+  --f-display:'Chakra Petch','Oxanium',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  --f-serif:'Source Serif 4','Source Serif Pro',Georgia,serif;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(70% 40% at 50% 0%,rgba(139,58,58,.22),transparent 60%),var(--paper);color:var(--ink);font-family:var(--f-mono);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit}
+.led{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none;background:var(--green);box-shadow:0 0 8px rgba(75,227,107,.8)}
+.wrap{width:100%;max-width:760px;margin-inline:auto;
+  padding-left:max(18px,env(safe-area-inset-left,0px));
+  padding-right:max(18px,env(safe-area-inset-right,0px))}
+
+/* top bar */
+.bar{border-bottom:1px solid var(--hair);background:rgba(13,15,14,.92)}
+.bar .wrap{display:flex;align-items:center;gap:12px;min-height:58px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink);text-decoration:none;white-space:nowrap}
+.bar .spacer{flex:1}
+.back{font-family:var(--f-mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-mute);text-decoration:none;border:1px solid var(--hair-strong);padding:9px 12px;transition:color .18s,border-color .18s}
+.back:hover,.back:focus-visible{color:var(--green);border-color:var(--green)}
+
+/* content */
+main{flex:1;padding-block:clamp(40px,10vw,76px)}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-mute);margin:0 0 14px;display:flex;align-items:center;gap:9px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,7vw,44px);letter-spacing:-.02em;line-height:1.05;margin:0 0 10px}
+.updated{font-family:var(--f-mono);font-size:11px;letter-spacing:1px;color:var(--ink-dim);text-transform:uppercase;margin:0 0 36px}
+h2{font-family:var(--f-serif);font-weight:500;font-size:clamp(18px,4.5vw,22px);letter-spacing:-.005em;color:var(--ink);margin:38px 0 10px}
+p{font-family:var(--f-serif);font-size:clamp(15.5px,4vw,17px);line-height:1.68;color:var(--ink-mute);margin:0 0 1.1em;max-width:62ch}
+p strong{color:var(--ink);font-weight:600}
+a.inline{color:var(--ink);border-bottom:1px solid var(--green-dim);text-decoration:none;transition:color .18s,border-color .18s}
+a.inline:hover{color:var(--green);border-color:var(--green)}
+ul{margin:0 0 1.1em;padding-left:1.1em;max-width:62ch}
+li{font-family:var(--f-serif);font-size:clamp(15.5px,4vw,17px);line-height:1.6;color:var(--ink-mute);margin:0 0 .5em}
+.note{font-family:var(--f-mono);font-size:12px;line-height:1.7;letter-spacing:.3px;color:var(--ink-dim);border-top:1px solid var(--hair);margin-top:40px;padding-top:20px;max-width:62ch}
+
+/* footer */
+.foot{background:var(--paper-alt);border-top:1px solid var(--hair);padding-block:20px;font-family:var(--f-mono);font-size:10px;letter-spacing:1px;color:var(--ink-mute)}
+.foot .wrap{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between}
+.foot a{color:var(--ink-mute);text-decoration:none;border-bottom:1px solid transparent;transition:color .18s,border-color .18s}
+.foot a:hover{color:var(--green);border-color:var(--green-dim)}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="led" aria-hidden="true"></span>SOURCE_OF_TRUTH</a>
+    <span class="spacer"></span>
+    <a class="back" href="index.html">&larr; Back to the site</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <p class="eyebrow"><span class="led" aria-hidden="true"></span>PRIVACY NOTE</p>
+    <h1>Privacy note</h1>
+    <p class="updated">Last updated 11 November 2026</p>
+
+    <p>This is the advance-reader site for the novel <em>Source of Truth</em>. It is run by one author, not a company. This note explains what the site collects, why, and how to stop hearing from me. It is written in plain language and is not legal advice.</p>
+
+    <h2>What I collect</h2>
+    <p>Only what you type into the sign-up form:</p>
+    <ul>
+      <li><strong>Your email address</strong> (required), so I can reach you.</li>
+      <li><strong>Your first name</strong> (optional), so a message can greet you by name.</li>
+    </ul>
+    <p>I collect nothing else. There is no account to create, and I do not ask for anything beyond these two fields.</p>
+
+    <h2>Why I collect it</h2>
+    <p>To send occasional news about <em>Source of Truth</em> and the next book, and to invite early readers to the advance copy. That is about one email a month, and usually fewer.</p>
+
+    <h2>How the sign-up is handled</h2>
+    <p>When you submit the form, it is processed by <strong>Formspree</strong>, a form-handling service, which forwards your details to my email inbox. Your details pass through Formspree's systems in transit, so their handling is governed by the <a class="inline" href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener">Formspree privacy policy</a>. I keep your email in my own records only to send you the messages described above.</p>
+
+    <h2>Fonts and third parties</h2>
+    <p>The site loads its typefaces from <strong>Google Fonts</strong>. When your browser fetches those fonts, Google may receive your IP address and basic request information, as described in the <a class="inline" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy policy</a>. The site is hosted on <strong>GitHub Pages</strong>, which may log standard request data to serve the page.</p>
+
+    <h2>Cookies and tracking</h2>
+    <p>This site sets <strong>no cookies</strong> and runs <strong>no advertising or analytics trackers</strong>. It does not store anything on your device or follow you across other sites.</p>
+
+    <h2>How to unsubscribe</h2>
+    <p>To stop receiving emails, reply to any message I send and say so, or write to me at <a class="inline" href="mailto:sovren@bmaccorp.com">sovren@bmaccorp.com</a>, and I will remove you. Every email I send will also include a way to opt out.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about this note, or about the details I hold on you, can go to <a class="inline" href="mailto:sovren@bmaccorp.com">sovren@bmaccorp.com</a>.</p>
+
+    <h2>Changes</h2>
+    <p>I may update this note as the project moves toward publication. The date at the top shows when it last changed.</p>
+
+    <p class="note">This page is for an unreleased book and is intended for invited early readers. It is not indexed by search engines. Nothing here is legal advice.</p>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>&copy; 2026 Bruce MacMillan</span>
+    <a href="index.html">Back to Source of Truth</a>
+  </div>
+</footer>
+
+</body>
+</html>
